@@ -22,31 +22,46 @@ import br.edu.ufersa.oportuniza.api.dtos.CandidacyUpdate;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/candidacies")
+@RequestMapping("/api/v1")
 @Validated
 public class CandidacyController {
 
-    @GetMapping
+    @GetMapping("/candidacies")
     public ResponseEntity<List<CandidacyResponse>> list() {
         return null;
     }
 
-    @GetMapping("/{candidacyId}")
+    @GetMapping("/opportunities/{opportunityId}/candidacies")
+    public ResponseEntity<List<CandidacyResponse>> listByOpportunity(
+            @PathVariable Long opportunityId
+    ) {
+        return null;
+    }
+
+    @GetMapping("/students/{studentId}/candidacies")
+    public ResponseEntity<List<CandidacyResponse>> listByStudent(
+            @PathVariable Long studentId
+    ) {
+        return null;
+    }
+
+    @GetMapping("/candidacies/{candidacyId}")
     public ResponseEntity<CandidacyResponse> findById(
             @PathVariable Long candidacyId
     ) {
         return null;
     }
 
-    @PostMapping
-    public ResponseEntity<CandidacyResponse> create(
+    @PostMapping("/opportunities/{opportunityId}/candidacies")
+    public ResponseEntity<CandidacyResponse> createForOpportunity(
+            @PathVariable Long opportunityId,
             @RequestBody @Valid CandidacyCreate dto,
             UriComponentsBuilder uriBuilder
     ) {
         return null;
     }
 
-    @PutMapping("/{candidacyId}")
+    @PutMapping("/candidacies/{candidacyId}")
     public ResponseEntity<CandidacyResponse> update(
             @PathVariable Long candidacyId,
             @RequestBody @Valid CandidacyUpdate dto
@@ -54,7 +69,7 @@ public class CandidacyController {
         return null;
     }
 
-    @PatchMapping("/{candidacyId}")
+    @PatchMapping("/candidacies/{candidacyId}")
     public ResponseEntity<CandidacyResponse> partialUpdate(
             @PathVariable Long candidacyId,
             @RequestBody @Valid CandidacyPatch dto
@@ -62,7 +77,7 @@ public class CandidacyController {
         return null;
     }
 
-    @DeleteMapping("/{candidacyId}")
+    @DeleteMapping("/candidacies/{candidacyId}")
     public ResponseEntity<Void> remove(
             @PathVariable Long candidacyId
     ) {

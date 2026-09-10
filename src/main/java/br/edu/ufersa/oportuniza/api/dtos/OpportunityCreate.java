@@ -13,9 +13,6 @@ import jakarta.validation.constraints.NotNull;
 
 public record OpportunityCreate(
 
-        @NotNull(message = "O professor é obrigatório!")
-        Long professorId,
-
         @NotBlank(message = "O título é obrigatório!")
         String title,
 

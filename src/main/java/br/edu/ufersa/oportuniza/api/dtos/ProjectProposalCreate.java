@@ -5,12 +5,8 @@ import java.util.List;
 
 import br.edu.ufersa.oportuniza.domain.entities.ProposalStatus;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 public record ProjectProposalCreate(
-
-        @NotNull(message = "O estudante é obrigatório!")
-        Long studentId,
 
         @NotBlank(message = "O título é obrigatório!")
         String title,
