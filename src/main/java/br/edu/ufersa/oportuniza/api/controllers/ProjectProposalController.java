@@ -22,31 +22,40 @@ import br.edu.ufersa.oportuniza.api.dtos.ProjectProposalUpdate;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/project-proposals")
+@RequestMapping("/api/v1")
 @Validated
 public class ProjectProposalController {
 
-    @GetMapping
+    @GetMapping("/project-proposals")
     public ResponseEntity<List<ProjectProposalResponse>> list() {
         return null;
     }
 
-    @GetMapping("/{projectProposalId}")
+    @GetMapping("/students/{studentId}/project-proposals")
+    public ResponseEntity<List<ProjectProposalResponse>> listByStudent(
+            @PathVariable Long studentId
+    ) {
+        return null;
+    }
+
+    @GetMapping("/project-proposals/{projectProposalId}")
     public ResponseEntity<ProjectProposalResponse> findById(
             @PathVariable Long projectProposalId
     ) {
         return null;
     }
 
-    @PostMapping
-    public ResponseEntity<ProjectProposalResponse> create(
+        @PostMapping("/students/{studentId}/project-proposals")
+        public ResponseEntity<ProjectProposalResponse> createForStudent(
+            @PathVariable Long studentId,
             @RequestBody @Valid ProjectProposalCreate dto,
             UriComponentsBuilder uriBuilder
     ) {
         return null;
     }
 
-    @PutMapping("/{projectProposalId}")
+
+    @PutMapping("/project-proposals/{projectProposalId}")
     public ResponseEntity<ProjectProposalResponse> update(
             @PathVariable Long projectProposalId,
             @RequestBody @Valid ProjectProposalUpdate dto
@@ -54,7 +63,7 @@ public class ProjectProposalController {
         return null;
     }
 
-    @PatchMapping("/{projectProposalId}")
+    @PatchMapping("/project-proposals/{projectProposalId}")
     public ResponseEntity<ProjectProposalResponse> partialUpdate(
             @PathVariable Long projectProposalId,
             @RequestBody @Valid ProjectProposalPatch dto
@@ -62,7 +71,7 @@ public class ProjectProposalController {
         return null;
     }
 
-    @DeleteMapping("/{projectProposalId}")
+    @DeleteMapping("/project-proposals/{projectProposalId}")
     public ResponseEntity<Void> remove(
             @PathVariable Long projectProposalId
     ) {
