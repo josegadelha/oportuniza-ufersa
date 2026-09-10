@@ -7,9 +7,6 @@ import jakarta.validation.constraints.NotNull;
 
 public record ProposalInterestCreate(
 
-        @NotNull(message = "A proposta de projeto é obrigatória!")
-        Long projectProposalId,
-
         @NotNull(message = "O usuário interessado é obrigatório!")
         Long userId,
 

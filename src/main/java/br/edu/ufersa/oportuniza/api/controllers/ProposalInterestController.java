@@ -22,31 +22,39 @@ import br.edu.ufersa.oportuniza.api.dtos.ProposalInterestUpdate;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/proposal-interests")
+@RequestMapping("/api/v1")
 @Validated
 public class ProposalInterestController {
 
-    @GetMapping
+    @GetMapping("/proposal-interests")
     public ResponseEntity<List<ProposalInterestResponse>> list() {
         return null;
     }
 
-    @GetMapping("/{proposalInterestId}")
+    @GetMapping("/project-proposals/{projectProposalId}/interests")
+    public ResponseEntity<List<ProposalInterestResponse>> listByProjectProposal(
+            @PathVariable Long projectProposalId
+    ) {
+        return null;
+    }
+
+    @GetMapping("/proposal-interests/{proposalInterestId}")
     public ResponseEntity<ProposalInterestResponse> findById(
             @PathVariable Long proposalInterestId
     ) {
         return null;
     }
 
-    @PostMapping
-    public ResponseEntity<ProposalInterestResponse> create(
+    @PostMapping("/project-proposals/{projectProposalId}/interests")
+    public ResponseEntity<ProposalInterestResponse> createForProjectProposal(
+            @PathVariable Long projectProposalId,
             @RequestBody @Valid ProposalInterestCreate dto,
             UriComponentsBuilder uriBuilder
     ) {
         return null;
     }
 
-    @PutMapping("/{proposalInterestId}")
+    @PutMapping("/proposal-interests/{proposalInterestId}")
     public ResponseEntity<ProposalInterestResponse> update(
             @PathVariable Long proposalInterestId,
             @RequestBody @Valid ProposalInterestUpdate dto
@@ -54,7 +62,7 @@ public class ProposalInterestController {
         return null;
     }
 
-    @PatchMapping("/{proposalInterestId}")
+    @PatchMapping("/proposal-interests/{proposalInterestId}")
     public ResponseEntity<ProposalInterestResponse> partialUpdate(
             @PathVariable Long proposalInterestId,
             @RequestBody @Valid ProposalInterestPatch dto
@@ -62,7 +70,7 @@ public class ProposalInterestController {
         return null;
     }
 
-    @DeleteMapping("/{proposalInterestId}")
+    @DeleteMapping("/proposal-interests/{proposalInterestId}")
     public ResponseEntity<Void> remove(
             @PathVariable Long proposalInterestId
     ) {
