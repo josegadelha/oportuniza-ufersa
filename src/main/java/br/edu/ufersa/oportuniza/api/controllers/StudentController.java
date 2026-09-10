@@ -17,7 +17,7 @@ import java.util.List;
 @Validated
 public class StudentController {
 
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<List<StudentResponse>> list() {
         return null;
     }
@@ -29,7 +29,7 @@ public class StudentController {
         return null;
     }
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<StudentResponse> create(
             @RequestBody @Valid StudentCreate dto,
             UriComponentsBuilder uriBuilder

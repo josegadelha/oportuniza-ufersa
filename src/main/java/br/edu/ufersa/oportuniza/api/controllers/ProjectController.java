@@ -13,23 +13,37 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/projects")
+@RequestMapping("/api/v1")
 @Validated
 public class ProjectController {
 
-    @GetMapping
+    @GetMapping("/projects")
     public ResponseEntity<List<ProjectResponse>> list() {
         return null;
     }
 
-    @GetMapping("/{projectId}")
+    @GetMapping("/students/{studentId}/projects")
+    public ResponseEntity<List<ProjectResponse>> listByStudent(
+            @PathVariable Long studentId
+    ) {
+        return null;
+    }
+
+    @GetMapping("/professors/{professorId}/projects")
+    public ResponseEntity<List<ProjectResponse>> listByProfessor(
+            @PathVariable Long professorId
+    ) {
+        return null;
+    }
+
+    @GetMapping("/projects/{projectId}")
     public ResponseEntity<ProjectResponse> findById(
             @PathVariable Long projectId
     ) {
         return null;
     }
 
-    @PostMapping
+    @PostMapping("/projects")
     public ResponseEntity<ProjectResponse> create(
             @RequestBody @Valid ProjectCreate dto,
             UriComponentsBuilder uriBuilder
@@ -37,7 +51,7 @@ public class ProjectController {
         return null;
     }
 
-    @PutMapping("/{projectId}")
+    @PutMapping("/projects/{projectId}")
     public ResponseEntity<ProjectResponse> update(
             @PathVariable Long projectId,
             @RequestBody @Valid ProjectUpdate dto
@@ -45,7 +59,7 @@ public class ProjectController {
         return null;
     }
 
-    @PatchMapping("/{projectId}")
+    @PatchMapping("/projects/{projectId}")
     public ResponseEntity<ProjectResponse> partialUpdate(
             @PathVariable Long projectId,
             @RequestBody @Valid ProjectPatch dto
@@ -53,7 +67,7 @@ public class ProjectController {
         return null;
     }
 
-    @DeleteMapping("/{projectId}")
+    @DeleteMapping("/projects/{projectId}")
     public ResponseEntity<Void> remove(
             @PathVariable Long projectId
     ) {

@@ -17,7 +17,7 @@ import java.util.List;
 @Validated
 public class ProfessorController {
 
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<List<ProfessorResponse>> list() {
         return null;
     }
@@ -29,7 +29,7 @@ public class ProfessorController {
         return null;
     }
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<ProfessorResponse> create(
             @RequestBody @Valid ProfessorCreate dto,
             UriComponentsBuilder uriBuilder
@@ -37,7 +37,7 @@ public class ProfessorController {
         return null;
     }
 
-    @PutMapping("/{professorId}")
+    @PutMapping("{/professorId}")
     public ResponseEntity<ProfessorResponse> update(
             @PathVariable Long professorId,
             @RequestBody @Valid ProfessorUpdate dto
