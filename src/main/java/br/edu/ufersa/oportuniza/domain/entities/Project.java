@@ -20,13 +20,11 @@ public class Project {
     }
 
     public void complete() {
-        validateTransition(ProjectStatus.COMPLETED);
         this.status = ProjectStatus.COMPLETED;
         this.endDate = LocalDate.now();
     }
 
     public void cancel() {
-        validateTransition(ProjectStatus.CANCELLED);
         this.status = ProjectStatus.CANCELLED;
     }
 
@@ -54,14 +52,6 @@ public class Project {
         this.endDate = newEndDate;
     }
 
-    private void validateTransition(ProjectStatus nextStatus) {
-        if (!this.status.canTransitionTo(nextStatus)) {
-            throw new IllegalStateException(
-                    String.format("Transição inválida: projeto está em '%s' e não pode ir para '%s'.",
-                            this.status, nextStatus)
-            );
-        }
-    }
 
     public Long getId() {
         return id;
