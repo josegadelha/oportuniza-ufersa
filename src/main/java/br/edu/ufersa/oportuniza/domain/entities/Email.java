@@ -1,5 +1,8 @@
 package br.edu.ufersa.oportuniza.domain.entities;
 
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public record Email(String value) {
 
     public Email {

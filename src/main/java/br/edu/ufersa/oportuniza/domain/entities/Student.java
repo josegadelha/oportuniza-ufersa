@@ -1,13 +1,28 @@
 package br.edu.ufersa.oportuniza.domain.entities;
 
+import jakarta.persistence.*;
+
 import java.util.Objects;
 
+@Entity
+@Table(name = "tb_students")
 public class Student extends User {
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Course course;
+
+    @Column(name = "current_semester", nullable = false)
     private Integer currentSemester;
+
+    @Column(nullable = false)
     private Double ira;
+
+    @Column(name = "receive_notifications", nullable = false)
     private boolean receiveNotifications;
+
+    protected Student() {
+    }
 
     private Student(Builder builder) {
         super(
@@ -111,17 +126,16 @@ public class Student extends User {
                 Integer currentSemester,
                 Double ira
         ) {
-            this.registration = Objects.requireNonNull(
-                    registration,
-                    "O registro é obrigatório!"
-            );
-
             if (name == null || name.isBlank()) {
                 throw new IllegalArgumentException(
                         "O nome é obrigatório!"
                 );
             }
 
+            this.registration = Objects.requireNonNull(
+                    registration,
+                    "O registro é obrigatório!"
+            );
             this.name = name;
 
             this.email = Objects.requireNonNull(
