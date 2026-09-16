@@ -22,6 +22,8 @@ public class Candidacy {
     @Column(name = "applied_at", nullable = false)
     private final LocalDateTime appliedAt;
     
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private CandidacyStatus status;
 
     private Candidacy(Builder builder) {

@@ -18,7 +18,8 @@ public class ProposalInterest {
 
     @Column(name = "user_id", nullable = false)
     private final User user;
-
+   
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private InterestStatus status;
 
