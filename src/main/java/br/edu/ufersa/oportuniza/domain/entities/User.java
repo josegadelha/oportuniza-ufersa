@@ -1,17 +1,50 @@
 package br.edu.ufersa.oportuniza.domain.entities;
 
+import jakarta.persistence.*;
+
 import java.util.Objects;
 
+@Entity
+@Table(name = "tb_users")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User {
 
-    private final Long id;
-    private final Registration registration;
-    private final String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @Embedded
+    @AttributeOverride(
+            name = "value",
+            column = @Column(name = "registration", nullable = false, unique = true)
+    )
+    private Registration registration;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Embedded
+    @AttributeOverride(
+            name = "value",
+            column = @Column(name = "email", nullable = false, unique = true)
+    )
     private Email email;
+
+    @Embedded
+    @AttributeOverride(
+            name = "value",
+            column = @Column(name = "password", nullable = false)
+    )
     private Password password;
+
+    @Column(name = "lattes_url")
     private String lattesUrl;
+
+    @Column
     private String description;
+
+    protected User() {
+    }
 
     protected User(
             Long id,
@@ -22,28 +55,18 @@ public abstract class User {
             String lattesUrl,
             String description
     ) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("O nome é obrigatório!");
+        }
+
         this.id = id;
         this.registration = Objects.requireNonNull(
                 registration,
                 "O registro é obrigatório!"
         );
-
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("O nome é obrigatório!");
-        }
-
         this.name = name;
-
-        this.email = Objects.requireNonNull(
-                email,
-                "O email é obrigatório!"
-        );
-
-        this.password = Objects.requireNonNull(
-                password,
-                "A senha é obrigatória!"
-        );
-
+        this.email = Objects.requireNonNull(email, "O email é obrigatório!");
+        this.password = Objects.requireNonNull(password, "A senha é obrigatória!");
         this.lattesUrl = lattesUrl;
         this.description = description;
     }
