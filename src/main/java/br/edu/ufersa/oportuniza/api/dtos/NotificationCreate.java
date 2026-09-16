@@ -6,6 +6,9 @@ import jakarta.validation.constraints.NotNull;
 
 public record NotificationCreate(
 
+        @NotNull(message = "O destinatário é obrigatório!")
+        Long recipientId,
+
         @NotBlank(message = "O título é obrigatório!")
         String title,
 

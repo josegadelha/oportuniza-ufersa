@@ -13,6 +13,10 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "recipient_id", nullable = false)
+    private User recipient;
+
     @Column(nullable = false, length = 150)
     private String title;
 
@@ -24,7 +28,7 @@ public class Notification {
     private NotificationType type;
 
     @Column(name = "is_read", nullable = false)
-    private boolean read;
+    private boolean isRead;
 
     @Column(name = "sent_at", nullable = false)
     private LocalDate sentAt;
@@ -34,23 +38,28 @@ public class Notification {
 
     private Notification(Builder builder) {
         this.id = builder.id;
+        this.recipient = builder.recipient;
         this.title = builder.title;
         this.message = builder.message;
         this.type = builder.type;
-        this.read = builder.read;
+        this.isRead = builder.isRead;
         this.sentAt = builder.sentAt;
     }
 
     public void markAsRead() {
-        this.read = true;
+        this.isRead = true;
     }
 
     public void markAsUnread() {
-        this.read = false;
+        this.isRead = false;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public User getRecipient() {
+        return recipient;
     }
 
     public String getTitle() {
@@ -66,11 +75,15 @@ public class Notification {
     }
 
     public boolean isRead() {
-        return read;
+        return isRead;
     }
 
     public LocalDate getSentAt() {
         return sentAt;
+    }
+
+    public boolean belongsTo(Long recipientId) {
+        return recipient != null && recipientId != null && recipientId.equals(recipient.getId());
     }
 
     @Override
@@ -88,16 +101,18 @@ public class Notification {
     public static class Builder {
 
         //Obrigatórios
+        private final User recipient;
         private final String title;
         private final String message;
         private final NotificationType type;
 
         //Opcionais
         private Long id;
-        private boolean read = false;
+        private boolean isRead = false;
         private LocalDate sentAt = LocalDate.now();
 
-        public Builder(String title, String message, NotificationType type) {
+        public Builder(User recipient, String title, String message, NotificationType type) {
+            this.recipient = Objects.requireNonNull(recipient, "O destinatário é obrigatório!");
             if (title == null || title.isBlank()) {
                 throw new IllegalArgumentException("O título é obrigatório!");
             }
@@ -114,8 +129,8 @@ public class Notification {
             return this;
         }
 
-        public Builder withRead(boolean read) {
-            this.read = read;
+        public Builder withIsRead(boolean isRead) {
+            this.isRead = isRead;
             return this;
         }
 

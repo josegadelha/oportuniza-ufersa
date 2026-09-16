@@ -9,11 +9,7 @@ public record ProjectPatch(
 
         String title,
 
-        LocalDate startDate,
-
         @FutureOrPresent(message = "A data de encerramento não pode estar no passado!")
-        LocalDate endDate,
-
-        ProjectStatus status
+        LocalDate endDate
 ) {
 }
