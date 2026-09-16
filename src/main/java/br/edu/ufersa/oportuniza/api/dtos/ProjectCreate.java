@@ -2,9 +2,11 @@ package br.edu.ufersa.oportuniza.api.dtos;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 public record ProjectCreate(
 
@@ -15,6 +17,9 @@ public record ProjectCreate(
         LocalDate startDate,
 
         @FutureOrPresent(message = "A data de encerramento não pode estar no passado!")
-        LocalDate endDate
+        LocalDate endDate,
+
+        @NotEmpty(message = "O projeto deve ter pelo menos um professor orientador!")
+        Set<Long> advisorIds
 ) {
 }
