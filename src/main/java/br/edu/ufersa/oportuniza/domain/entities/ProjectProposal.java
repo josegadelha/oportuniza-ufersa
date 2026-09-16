@@ -5,12 +5,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import jakarta.persistence.*;
+
 public class ProjectProposal extends Proposal {
 
+    @Column(name = "student_id", nullable = false)
     private final Student student;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private ProposalStatus status;
 
+    @ElementCollection 
+    @CollectionTable(name = "project_proposal_desired_skills", joinColumns = @JoinColumn(name = "project_proposal_id"))
+    @Column(name = "desired_skill", nullable = false)
     private List<String> desiredSkills;
 
     private ProjectProposal(Builder builder) {

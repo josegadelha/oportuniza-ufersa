@@ -11,10 +11,6 @@ import jakarta.persistence.*;
 @Entity 
 @Table(name = "opportunities")
 public class Opportunity extends Proposal {
-
-    @Id 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private final Long id;
     
     @Column(name = "professor_id", nullable = false)
     private final Professor professor;
@@ -48,7 +44,6 @@ public class Opportunity extends Proposal {
         super(builder.id, builder.title, builder.description, builder.publishedAt);
         this.professor = builder.professor;
         this.type = builder.type;
-        this.id = builder.id;
         this.positions = builder.positions;
         this.workloadHours = builder.workloadHours;
         this.remuneration = builder.remuneration;
