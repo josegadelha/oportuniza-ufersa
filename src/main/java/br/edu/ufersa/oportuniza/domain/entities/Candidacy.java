@@ -3,15 +3,25 @@ package br.edu.ufersa.oportuniza.domain.entities;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "candidacies")
 public class Candidacy {
+
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final Long id;
 
+    @Column(name = "student_id", nullable = false)
     private final Student student;
 
+    @Column(name = "opportunity_id", nullable = false)
     private final Opportunity opportunity;
 
+    @Column(name = "applied_at", nullable = false)
     private final LocalDateTime appliedAt;
-
+    
     private CandidacyStatus status;
 
     private Candidacy(Builder builder) {
