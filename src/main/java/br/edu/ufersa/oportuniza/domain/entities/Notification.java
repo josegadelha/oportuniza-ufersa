@@ -1,16 +1,36 @@
 package br.edu.ufersa.oportuniza.domain.entities;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Entity
+@Table(name = "notifications")
 public class Notification {
 
-    private final Long id;
-    private final String title;
-    private final String message;
-    private final NotificationType type;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 150)
+    private String title;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String message;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 40)
+    private NotificationType type;
+
+    @Column(name = "is_read", nullable = false)
     private boolean read;
-    private final LocalDate sentAt;
+
+    @Column(name = "sent_at", nullable = false)
+    private LocalDate sentAt;
+
+    protected Notification() {
+    }
 
     private Notification(Builder builder) {
         this.id = builder.id;
@@ -53,14 +73,26 @@ public class Notification {
         return sentAt;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Notification other)) return false;
+        return id != null && id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
     public static class Builder {
 
-        // Obrigatórios
+        //Obrigatórios
         private final String title;
         private final String message;
         private final NotificationType type;
 
-        // Opcionais com valores padrão explícitos
+        //Opcionais
         private Long id;
         private boolean read = false;
         private LocalDate sentAt = LocalDate.now();

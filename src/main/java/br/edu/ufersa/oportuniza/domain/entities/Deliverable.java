@@ -1,27 +1,36 @@
 package br.edu.ufersa.oportuniza.domain.entities;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Entity
+@Table(name = "deliverables")
 public class Deliverable {
 
-    private final Long id;
-    private final Project project;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
+
+    @Column(nullable = false, length = 150)
     private String title;
+
+    @Column(name = "deadline")
     private LocalDate deadline;
+
+    protected Deliverable() {
+    }
 
     private Deliverable(Builder builder) {
         this.id = builder.id;
         this.project = builder.project;
         this.title = builder.title;
         this.deadline = builder.deadline;
-    }
-
-    private void ensureProjectIsActive() {
-        if (project.getStatus() != ProjectStatus.ACTIVE) {
-            throw new IllegalStateException(
-                    "Não é permitido alterar entregáveis de projetos que não estão ativos.");
-        }
     }
 
     public void renameTitle(String newTitle) {
@@ -33,14 +42,19 @@ public class Deliverable {
     }
 
     public void postponeDeadline(LocalDate newDeadline) {
+        ensureProjectIsActive();
         Objects.requireNonNull(newDeadline, "O novo prazo é obrigatório.");
-        if (newDeadline.isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("O novo prazo não pode ser anterior à data de hoje.");
-        }
         if (this.deadline != null && newDeadline.isBefore(this.deadline)) {
             throw new IllegalArgumentException("O novo prazo não pode antecipar o prazo já vigente.");
         }
         this.deadline = newDeadline;
+    }
+
+    private void ensureProjectIsActive() {
+        if (project.getStatus() != ProjectStatus.ACTIVE) {
+            throw new IllegalStateException(
+                    "Não é permitido alterar entregáveis de projetos que não estão ativos.");
+        }
     }
 
     public Long getId() {
@@ -59,13 +73,23 @@ public class Deliverable {
         return deadline;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Deliverable other)) return false;
+        return id != null && id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
     public static class Builder {
 
-        // Obrigatórios
         private final Project project;
         private final String title;
 
-        // Opcionais com valores padrão explícitos
         private Long id;
         private LocalDate deadline;
 

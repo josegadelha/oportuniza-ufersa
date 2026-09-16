@@ -3,13 +3,32 @@ package br.edu.ufersa.oportuniza.domain.entities;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "submissions")
 public class Submission {
 
-    private final Long id;
-    private final Deliverable deliverable;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "deliverable_id", nullable = false)
+    private Deliverable deliverable;
+
+    @Column(name = "file_path", length = 255)
     private String filePath;
+
+    @Column(name = "submitted_at")
     private LocalDateTime submittedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private SubmissionStatus status;
+
+    protected Submission() {
+    }
 
     private Submission(Builder builder) {
         this.id = builder.id;
@@ -20,10 +39,10 @@ public class Submission {
     }
 
     public void submit(String filePath) {
-        validateTransition(SubmissionStatus.PENDING);
         if (filePath == null || filePath.isBlank()) {
             throw new IllegalArgumentException("O caminho do arquivo é obrigatório para o envio.");
         }
+        validateTransition(SubmissionStatus.PENDING);
         this.filePath = filePath;
         this.submittedAt = LocalDateTime.now();
         this.status = SubmissionStatus.PENDING;
@@ -68,12 +87,24 @@ public class Submission {
         return status;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Submission other)) return false;
+        return id != null && id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
     public static class Builder {
 
-        // Obrigatório
+        //Obrigatório
         private final Deliverable deliverable;
 
-        // Opcionais com valores padrão explícitos
+        //Opcionais
         private Long id;
         private String filePath;
         private LocalDateTime submittedAt;
@@ -109,7 +140,9 @@ public class Submission {
         }
 
         private void validateInvariants() {
-            if (status == SubmissionStatus.WAITING) return;
+            if (status == SubmissionStatus.WAITING) {
+                return;
+            }
             if (filePath == null || filePath.isBlank()) {
                 throw new IllegalArgumentException("O caminho do arquivo é obrigatório quando a submissão não está aguardando envio.");
             }
