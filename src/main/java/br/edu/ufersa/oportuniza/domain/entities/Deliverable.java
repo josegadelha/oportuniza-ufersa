@@ -17,7 +17,15 @@ public class Deliverable {
         this.deadline = builder.deadline;
     }
 
+    private void ensureProjectIsActive() {
+        if (project.getStatus() != ProjectStatus.ACTIVE) {
+            throw new IllegalStateException(
+                    "Não é permitido alterar entregáveis de projetos que não estão ativos.");
+        }
+    }
+
     public void renameTitle(String newTitle) {
+        ensureProjectIsActive();
         if (newTitle == null || newTitle.isBlank()) {
             throw new IllegalArgumentException("O título não pode ser vazio.");
         }

@@ -109,8 +109,12 @@ public class Submission {
         }
 
         private void validateInvariants() {
-            if (status != SubmissionStatus.WAITING && (filePath == null || filePath.isBlank())) {
+            if (status == SubmissionStatus.WAITING) return;
+            if (filePath == null || filePath.isBlank()) {
                 throw new IllegalArgumentException("O caminho do arquivo é obrigatório quando a submissão não está aguardando envio.");
+            }
+            if (submittedAt == null) {
+                throw new IllegalArgumentException("A data de envio é obrigatória quando a submissão não está aguardando envio.");
             }
         }
     }
