@@ -1,15 +1,33 @@
 package br.edu.ufersa.oportuniza.domain.entities;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Entity
+@Table(name = "projects")
 public class Project {
 
-    private final Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 150)
     private String title;
-    private final LocalDate startDate;
+
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
+
+    @Column(name = "end_date")
     private LocalDate endDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private ProjectStatus status;
+
+    protected Project() {
+    }
 
     private Project(Builder builder) {
         this.id = builder.id;
@@ -81,6 +99,18 @@ public class Project {
 
     public ProjectStatus getStatus() {
         return status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Project other)) return false;
+        return id != null && id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 
     public static class Builder {
