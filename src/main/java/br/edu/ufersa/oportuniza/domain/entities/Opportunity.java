@@ -6,27 +6,49 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import jakarta.persistence.*;
+
+@Entity 
+@Table(name = "opportunities")
 public class Opportunity extends Proposal {
 
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private final Long id;
+    
+    @Column(name = "professor_id", nullable = false)
     private final Professor professor;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
     private final OpportunityType type;
 
+    @Column(name = "positions", nullable = false)
     private Integer positions;
 
+    @Column(name = "workload_hours", nullable = false)
     private Integer workloadHours;
 
+    @Column(name = "remuneration", nullable = false)
     private Double remuneration;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private OpportunityStatus status;
 
+    @Column(name = "application_deadline")
     private LocalDate applicationDeadline;
+
+    @ElementCollection
+    @CollectionTable(name = "opportunity_requirements", joinColumns = @JoinColumn(name = "opportunity_id"))
+    @Column(name = "requirement", nullable = false)
     private List<String> requirements;
 
     private Opportunity(Builder builder) {
         super(builder.id, builder.title, builder.description, builder.publishedAt);
         this.professor = builder.professor;
         this.type = builder.type;
+        this.id = builder.id;
         this.positions = builder.positions;
         this.workloadHours = builder.workloadHours;
         this.remuneration = builder.remuneration;

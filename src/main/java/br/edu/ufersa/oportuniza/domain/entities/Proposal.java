@@ -2,13 +2,22 @@ package br.edu.ufersa.oportuniza.domain.entities;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table (name = "proposals")
 public abstract class Proposal {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	private final Long id;
 
+	@Column (nullable = false, length = 150)
 	private final String title;
 
+	@Column (nullable = false, length = 500)
 	private final String description;
 
+	@Column (name = "published_at", nullable = false)
 	protected LocalDateTime publishedAt;
 
 	protected Proposal(Long id, String title, String description, LocalDateTime publishedAt) {
