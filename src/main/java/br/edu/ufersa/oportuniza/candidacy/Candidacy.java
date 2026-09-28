@@ -1,9 +1,12 @@
-package br.edu.ufersa.oportuniza.domain.entities;
+package br.edu.ufersa.oportuniza.candidacy;
+
+import br.edu.ufersa.oportuniza.opportunity.Opportunity;
+import br.edu.ufersa.oportuniza.student.Student;
+
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-
-import jakarta.persistence.*;
 
 @Entity
 @Table(name = "candidacies")

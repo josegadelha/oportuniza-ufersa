@@ -1,9 +1,5 @@
-package br.edu.ufersa.oportuniza.api.controllers;
+package br.edu.ufersa.oportuniza.candidacy;
 
-import br.edu.ufersa.oportuniza.api.dtos.CandidacyCreate;
-import br.edu.ufersa.oportuniza.api.dtos.CandidacyPatch;
-import br.edu.ufersa.oportuniza.api.dtos.CandidacyResponse;
-import br.edu.ufersa.oportuniza.api.dtos.CandidacyUpdate;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
