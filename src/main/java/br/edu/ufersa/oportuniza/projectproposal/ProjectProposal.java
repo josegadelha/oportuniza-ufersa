@@ -1,11 +1,15 @@
-package br.edu.ufersa.oportuniza.domain.entities;
+package br.edu.ufersa.oportuniza.projectproposal;
+
+import br.edu.ufersa.oportuniza.proposal.Proposal;
+import br.edu.ufersa.oportuniza.proposal.ProposalStatus;
+import br.edu.ufersa.oportuniza.student.Student;
+
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import jakarta.persistence.*;
 
 public class ProjectProposal extends Proposal {
 

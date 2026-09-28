@@ -1,8 +1,8 @@
-package br.edu.ufersa.oportuniza.domain.entities;
-
-import java.time.LocalDateTime;
+package br.edu.ufersa.oportuniza.proposal;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table (name = "proposals")

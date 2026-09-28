@@ -1,9 +1,5 @@
-package br.edu.ufersa.oportuniza.api.controllers;
+package br.edu.ufersa.oportuniza.projectproposal;
 
-import br.edu.ufersa.oportuniza.api.dtos.ProjectProposalCreate;
-import br.edu.ufersa.oportuniza.api.dtos.ProjectProposalPatch;
-import br.edu.ufersa.oportuniza.api.dtos.ProjectProposalResponse;
-import br.edu.ufersa.oportuniza.api.dtos.ProjectProposalUpdate;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -44,7 +40,6 @@ public class ProjectProposalController {
     ) {
         return null;
     }
-
 
     @PutMapping("/project-proposals/{projectProposalId}")
     public ResponseEntity<ProjectProposalResponse> update(

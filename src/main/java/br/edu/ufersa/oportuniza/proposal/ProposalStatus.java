@@ -1,2 +1,3 @@
-package br.edu.ufersa.oportuniza.domain.entities;
+package br.edu.ufersa.oportuniza.proposal;
+
 public enum ProposalStatus { OPEN, IN_PROGRESS, CLOSED }
