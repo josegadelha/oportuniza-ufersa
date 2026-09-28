@@ -1,8 +1,10 @@
 package br.edu.ufersa.oportuniza.submission.dto;
 
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDateTime;
+
+import br.edu.ufersa.oportuniza.submission.Submission;
+import br.edu.ufersa.oportuniza.submission.SubmissionStatus;
+import jakarta.validation.constraints.NotNull;
 
 public record SubmissionResponse(
 

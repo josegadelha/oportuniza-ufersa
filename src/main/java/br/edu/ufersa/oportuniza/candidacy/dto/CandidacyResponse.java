@@ -1,8 +1,9 @@
 package br.edu.ufersa.oportuniza.candidacy.dto;
 
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDateTime;
+
+import br.edu.ufersa.oportuniza.candidacy.CandidacyStatus;
+import jakarta.validation.constraints.NotNull;
 
 public record CandidacyResponse(
 

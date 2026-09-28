@@ -1,10 +1,12 @@
 package br.edu.ufersa.oportuniza.project.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDate;
 import java.util.Set;
+
+import br.edu.ufersa.oportuniza.project.Project;
+import br.edu.ufersa.oportuniza.project.ProjectStatus;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record ProjectResponse(
 

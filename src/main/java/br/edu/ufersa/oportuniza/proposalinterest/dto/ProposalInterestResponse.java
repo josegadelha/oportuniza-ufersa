@@ -1,8 +1,9 @@
 package br.edu.ufersa.oportuniza.proposalinterest.dto;
 
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDateTime;
+
+import br.edu.ufersa.oportuniza.proposalinterest.InterestStatus;
+import jakarta.validation.constraints.NotNull;
 
 public record ProposalInterestResponse(
 

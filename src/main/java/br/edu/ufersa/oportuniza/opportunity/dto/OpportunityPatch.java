@@ -1,12 +1,14 @@
 package br.edu.ufersa.oportuniza.opportunity.dto;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Size;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import br.edu.ufersa.oportuniza.opportunity.OpportunityStatus;
+import br.edu.ufersa.oportuniza.opportunity.OpportunityType;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 
 public record OpportunityPatch(
 

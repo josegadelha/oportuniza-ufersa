@@ -1,5 +1,6 @@
 package br.edu.ufersa.oportuniza.notification.dto;
 
+import br.edu.ufersa.oportuniza.notification.NotificationType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
