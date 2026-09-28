@@ -4,7 +4,7 @@ import br.edu.ufersa.oportuniza.professor.dto.ProfessorCreate;
 import br.edu.ufersa.oportuniza.professor.dto.ProfessorPatch;
 import br.edu.ufersa.oportuniza.professor.dto.ProfessorResponse;
 import br.edu.ufersa.oportuniza.professor.dto.ProfessorUpdate;
-
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,13 +15,16 @@ class ProfessorApplicationService {
 
     private final ProfessorRepository professorRepository;
     private final ProfessorMapper mapper;
+    private final PasswordEncoder passwordEncoder;
 
     public ProfessorApplicationService(
             ProfessorRepository professorRepository,
-            ProfessorMapper mapper
+            ProfessorMapper mapper,
+            PasswordEncoder passwordEncoder
     ) {
         this.professorRepository = professorRepository;
         this.mapper = mapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional(readOnly = true)
@@ -39,7 +42,10 @@ class ProfessorApplicationService {
 
     @Transactional
     public ProfessorResponse create(ProfessorCreate dto) {
-        Professor newProfessor = mapper.toEntity(dto);
+        String encodedPassword = passwordEncoder.encode(dto.password());
+
+        Professor newProfessor = mapper.toEntity(dto, encodedPassword);
+
         Professor savedProfessor = professorRepository.save(newProfessor);
         return mapper.toResponse(savedProfessor);
     }
@@ -51,7 +57,11 @@ class ProfessorApplicationService {
     ) {
         Professor professor = professorRepository.findById(professorId)
                 .orElseThrow();
-        mapper.updateEntityFromDto(dto, professor);
+
+        String encodedPassword = passwordEncoder.encode(dto.password());
+
+        mapper.updateEntityFromDto(dto, professor, encodedPassword);
+
         Professor updatedProfessor = professorRepository.save(professor);
         return mapper.toResponse(updatedProfessor);
     }
@@ -63,7 +73,13 @@ class ProfessorApplicationService {
     ) {
         Professor professor = professorRepository.findById(professorId)
                 .orElseThrow();
-        mapper.updateEntityFromDto(dto, professor);
+
+        String encodedPassword = dto.password() != null
+                ? passwordEncoder.encode(dto.password())
+                : null;
+
+        mapper.updateEntityFromDto(dto, professor, encodedPassword);
+
         Professor updatedProfessor = professorRepository.save(professor);
         return mapper.toResponse(updatedProfessor);
     }

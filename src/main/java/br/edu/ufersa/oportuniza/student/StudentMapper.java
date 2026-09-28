@@ -14,7 +14,10 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface StudentMapper {
 
-    default Student toEntity(StudentCreate dto) {
+    default Student toEntity(
+            StudentCreate dto,
+            String encodedPassword
+    ) {
         if (dto == null) {
             return null;
         }
@@ -24,7 +27,7 @@ public interface StudentMapper {
                 new Registration(dto.registration()),
                 dto.name(),
                 new Email(dto.email()),
-                new Password(dto.password()),
+                new Password(encodedPassword),
                 dto.course(),
                 dto.currentPeriod(),
                 dto.ira()
@@ -55,7 +58,9 @@ public interface StudentMapper {
         );
     }
 
-    default List<StudentResponse> toResponseList(List<Student> entities) {
+    default List<StudentResponse> toResponseList(
+            List<Student> entities
+    ) {
         if (entities == null) {
             return null;
         }
@@ -67,11 +72,15 @@ public interface StudentMapper {
 
     default void updateEntityFromDto(
             StudentUpdate dto,
-            Student entity
+            Student entity,
+            String encodedPassword
     ) {
         entity.changeEmail(new Email(dto.email()));
-        entity.changePassword(new Password(dto.password()));
-        entity.updateProfile(dto.lattesUrl(), dto.description());
+        entity.changePassword(new Password(encodedPassword));
+        entity.updateProfile(
+                dto.lattesUrl(),
+                dto.description()
+        );
         entity.updateAcademicData(
                 dto.course(),
                 dto.currentPeriod(),
@@ -87,17 +96,19 @@ public interface StudentMapper {
 
     default void updateEntityFromDto(
             StudentPatch dto,
-            Student entity
+            Student entity,
+            String encodedPassword
     ) {
         if (dto.email() != null) {
             entity.changeEmail(new Email(dto.email()));
         }
 
-        if (dto.password() != null) {
-            entity.changePassword(new Password(dto.password()));
+        if (encodedPassword != null) {
+            entity.changePassword(new Password(encodedPassword));
         }
 
-        if (dto.lattesUrl() != null || dto.description() != null) {
+        if (dto.lattesUrl() != null
+                || dto.description() != null) {
             entity.updateProfile(
                     dto.lattesUrl() != null
                             ? dto.lattesUrl()

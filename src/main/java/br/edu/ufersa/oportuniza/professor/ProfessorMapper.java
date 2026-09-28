@@ -14,7 +14,10 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ProfessorMapper {
 
-    default Professor toEntity(ProfessorCreate dto) {
+    default Professor toEntity(
+            ProfessorCreate dto,
+            String encodedPassword
+    ) {
         if (dto == null) {
             return null;
         }
@@ -24,7 +27,7 @@ public interface ProfessorMapper {
                 new Registration(dto.registration()),
                 dto.name(),
                 new Email(dto.email()),
-                new Password(dto.password()),
+                new Password(encodedPassword),
                 dto.department()
         )
                 .withLattesUrl(dto.lattesUrl())
@@ -63,10 +66,11 @@ public interface ProfessorMapper {
 
     default void updateEntityFromDto(
             ProfessorUpdate dto,
-            Professor entity
+            Professor entity,
+            String encodedPassword
     ) {
         entity.changeEmail(new Email(dto.email()));
-        entity.changePassword(new Password(dto.password()));
+        entity.changePassword(new Password(encodedPassword));
         entity.updateProfile(
                 dto.lattesUrl(),
                 dto.description()
@@ -76,14 +80,15 @@ public interface ProfessorMapper {
 
     default void updateEntityFromDto(
             ProfessorPatch dto,
-            Professor entity
+            Professor entity,
+            String encodedPassword
     ) {
         if (dto.email() != null) {
             entity.changeEmail(new Email(dto.email()));
         }
 
-        if (dto.password() != null) {
-            entity.changePassword(new Password(dto.password()));
+        if (encodedPassword != null) {
+            entity.changePassword(new Password(encodedPassword));
         }
 
         if (dto.lattesUrl() != null

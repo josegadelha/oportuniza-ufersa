@@ -9,5 +9,8 @@ public record Password(String value) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("A senha é obrigatória!");
         }
+        if (value.length() < 6) {
+            throw new IllegalArgumentException("A senha deve possuir 6 caracteres ou mais!");
+        }
     }
 }

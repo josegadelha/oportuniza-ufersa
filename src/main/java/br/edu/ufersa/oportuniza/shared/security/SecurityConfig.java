@@ -23,8 +23,6 @@ public class SecurityConfig {
         this.securityFilter = securityFilter;
     }
 
-
-
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http
@@ -42,11 +40,6 @@ public class SecurityConfig {
                             "/api/v1/auth/login"
                     ).permitAll();
 
-                    req.requestMatchers(
-                            HttpMethod.POST,
-                            "/api/v1/auth/register"
-                    ).permitAll();
-
                     req.anyRequest().authenticated();
                 })
                 .addFilterBefore(
@@ -56,16 +49,12 @@ public class SecurityConfig {
                 .build();
     }
 
-
-
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration configuration
     ) throws Exception {
         return configuration.getAuthenticationManager();
     }
-
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
