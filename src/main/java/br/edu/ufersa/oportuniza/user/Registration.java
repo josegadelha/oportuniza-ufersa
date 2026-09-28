@@ -1,4 +1,4 @@
-package br.edu.ufersa.oportuniza.domain.entities;
+package br.edu.ufersa.oportuniza.user;
 
 import jakarta.persistence.Embeddable;
 
