@@ -1,4 +1,5 @@
-package br.edu.ufersa.oportuniza.domain.entities;
+package br.edu.ufersa.oportuniza.project;
+
 public enum ProjectStatus {
     ACTIVE, COMPLETED, CANCELLED;
 

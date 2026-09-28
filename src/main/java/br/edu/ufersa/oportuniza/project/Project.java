@@ -1,4 +1,7 @@
-package br.edu.ufersa.oportuniza.domain.entities;
+package br.edu.ufersa.oportuniza.project;
+
+import br.edu.ufersa.oportuniza.professor.Professor;
+import br.edu.ufersa.oportuniza.student.Student;
 
 import jakarta.persistence.*;
 

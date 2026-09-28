@@ -1,9 +1,5 @@
-package br.edu.ufersa.oportuniza.api.controllers;
+package br.edu.ufersa.oportuniza.project;
 
-import br.edu.ufersa.oportuniza.api.dtos.ProjectCreate;
-import br.edu.ufersa.oportuniza.api.dtos.ProjectPatch;
-import br.edu.ufersa.oportuniza.api.dtos.ProjectResponse;
-import br.edu.ufersa.oportuniza.api.dtos.ProjectUpdate;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

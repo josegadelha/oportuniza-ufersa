@@ -1,9 +1,8 @@
-package br.edu.ufersa.oportuniza.api.dtos;
+package br.edu.ufersa.oportuniza.project.dto;
+
+import jakarta.validation.constraints.FutureOrPresent;
 
 import java.time.LocalDate;
-
-import br.edu.ufersa.oportuniza.domain.entities.ProjectStatus;
-import jakarta.validation.constraints.FutureOrPresent;
 
 public record ProjectPatch(
 

@@ -1,12 +1,9 @@
-package br.edu.ufersa.oportuniza.domain.repositories;
-
-import java.util.List;
+package br.edu.ufersa.oportuniza.project;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import br.edu.ufersa.oportuniza.domain.entities.Project;
-import br.edu.ufersa.oportuniza.domain.entities.ProjectStatus;
+import java.util.List;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
