@@ -1,9 +1,5 @@
-package br.edu.ufersa.oportuniza.api.controllers;
+package br.edu.ufersa.oportuniza.deliverable;
 
-import br.edu.ufersa.oportuniza.api.dtos.DeliverableCreate;
-import br.edu.ufersa.oportuniza.api.dtos.DeliverablePatch;
-import br.edu.ufersa.oportuniza.api.dtos.DeliverableResponse;
-import br.edu.ufersa.oportuniza.api.dtos.DeliverableUpdate;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

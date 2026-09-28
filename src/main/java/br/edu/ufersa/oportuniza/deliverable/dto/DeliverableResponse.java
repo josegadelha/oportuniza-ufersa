@@ -1,6 +1,5 @@
-package br.edu.ufersa.oportuniza.api.dtos;
+package br.edu.ufersa.oportuniza.deliverable.dto;
 
-import br.edu.ufersa.oportuniza.domain.entities.Deliverable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 

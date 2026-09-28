@@ -1,11 +1,9 @@
-package br.edu.ufersa.oportuniza.domain.repositories;
-
-import java.util.List;
+package br.edu.ufersa.oportuniza.deliverable;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import br.edu.ufersa.oportuniza.domain.entities.Deliverable;
+import java.util.List;
 
 @Repository
 public interface DeliverableRepository extends JpaRepository<Deliverable, Long> {

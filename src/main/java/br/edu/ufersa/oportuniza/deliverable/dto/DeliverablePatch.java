@@ -1,4 +1,4 @@
-package br.edu.ufersa.oportuniza.api.dtos;
+package br.edu.ufersa.oportuniza.deliverable.dto;
 
 import jakarta.validation.constraints.FutureOrPresent;
 

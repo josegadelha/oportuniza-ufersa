@@ -1,4 +1,4 @@
-package br.edu.ufersa.oportuniza.api.dtos;
+package br.edu.ufersa.oportuniza.deliverable.dto;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-public record DeliverableUpdate(
+public record DeliverableCreate(
 
         @NotBlank(message = "O título é obrigatório!")
         String title,

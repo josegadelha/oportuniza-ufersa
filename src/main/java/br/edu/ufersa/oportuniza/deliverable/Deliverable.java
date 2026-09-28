@@ -1,4 +1,7 @@
-package br.edu.ufersa.oportuniza.domain.entities;
+package br.edu.ufersa.oportuniza.deliverable;
+
+import br.edu.ufersa.oportuniza.project.Project;
+import br.edu.ufersa.oportuniza.project.ProjectStatus;
 
 import jakarta.persistence.*;
 
