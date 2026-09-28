@@ -4,7 +4,7 @@ import br.edu.ufersa.oportuniza.student.dto.StudentCreate;
 import br.edu.ufersa.oportuniza.student.dto.StudentPatch;
 import br.edu.ufersa.oportuniza.student.dto.StudentResponse;
 import br.edu.ufersa.oportuniza.student.dto.StudentUpdate;
-
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,13 +15,16 @@ class StudentApplicationService {
 
     private final StudentRepository studentRepository;
     private final StudentMapper mapper;
+    private final PasswordEncoder passwordEncoder;
 
     public StudentApplicationService(
             StudentRepository studentRepository,
-            StudentMapper mapper
+            StudentMapper mapper,
+            PasswordEncoder passwordEncoder
     ) {
         this.studentRepository = studentRepository;
         this.mapper = mapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional(readOnly = true)
@@ -39,7 +42,10 @@ class StudentApplicationService {
 
     @Transactional
     public StudentResponse create(StudentCreate dto) {
-        Student newStudent = mapper.toEntity(dto);
+        String encodedPassword = passwordEncoder.encode(dto.password());
+
+        Student newStudent = mapper.toEntity(dto, encodedPassword);
+
         Student savedStudent = studentRepository.save(newStudent);
         return mapper.toResponse(savedStudent);
     }
@@ -51,7 +57,11 @@ class StudentApplicationService {
     ) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow();
-        mapper.updateEntityFromDto(dto, student);
+
+        String encodedPassword = passwordEncoder.encode(dto.password());
+
+        mapper.updateEntityFromDto(dto, student, encodedPassword);
+
         Student updatedStudent = studentRepository.save(student);
         return mapper.toResponse(updatedStudent);
     }
@@ -63,7 +73,13 @@ class StudentApplicationService {
     ) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow();
-        mapper.updateEntityFromDto(dto, student);
+
+        String encodedPassword = dto.password() != null
+                ? passwordEncoder.encode(dto.password())
+                : null;
+
+        mapper.updateEntityFromDto(dto, student, encodedPassword);
+
         Student updatedStudent = studentRepository.save(student);
         return mapper.toResponse(updatedStudent);
     }
