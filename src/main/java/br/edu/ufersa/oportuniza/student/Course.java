@@ -1,4 +1,4 @@
-package br.edu.ufersa.oportuniza.domain.entities;
+package br.edu.ufersa.oportuniza.student;
 
 public enum Course {
     CIENCIA_DA_COMPUTACAO,

@@ -1,6 +1,7 @@
-package br.edu.ufersa.oportuniza.api.dtos;
+package br.edu.ufersa.oportuniza.student.dto;
 
-import br.edu.ufersa.oportuniza.domain.entities.Course;
+import br.edu.ufersa.oportuniza.student.Course;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -25,7 +26,7 @@ public record StudentUpdate(
 
         @NotNull(message = "O período atual é obrigatório!")
         @Min(value = 1, message = "O período atual deve ser maior que zero!")
-        Integer currentSemester,
+        Integer currentPeriod,
 
         @NotNull(message = "O IRA é obrigatório!")
         @Min(value = 0, message = "O IRA deve estar entre 0 e 10!")

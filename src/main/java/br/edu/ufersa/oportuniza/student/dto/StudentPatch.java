@@ -1,6 +1,7 @@
-package br.edu.ufersa.oportuniza.api.dtos;
+package br.edu.ufersa.oportuniza.student.dto;
 
-import br.edu.ufersa.oportuniza.domain.entities.Course;
+import br.edu.ufersa.oportuniza.student.Course;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -22,7 +23,7 @@ public record StudentPatch(
         Course course,
 
         @Min(value = 1, message = "O período atual deve ser maior que zero!")
-        Integer currentSemester,
+        Integer currentPeriod,
 
         @Min(value = 0, message = "O IRA deve estar entre 0 e 10!")
         @Max(value = 10, message = "O IRA deve estar entre 0 e 10!")

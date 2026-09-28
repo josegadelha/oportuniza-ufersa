@@ -1,6 +1,15 @@
-package br.edu.ufersa.oportuniza.domain.entities;
+package br.edu.ufersa.oportuniza.student;
 
-import jakarta.persistence.*;
+import br.edu.ufersa.oportuniza.user.Email;
+import br.edu.ufersa.oportuniza.user.Password;
+import br.edu.ufersa.oportuniza.user.Registration;
+import br.edu.ufersa.oportuniza.user.User;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
 
 import java.util.Objects;
 
@@ -12,8 +21,8 @@ public class Student extends User {
     @Column(nullable = false)
     private Course course;
 
-    @Column(name = "current_semester", nullable = false)
-    private Integer currentSemester;
+    @Column(name = "current_period", nullable = false)
+    private Integer currentPeriod;
 
     @Column(nullable = false)
     private Double ira;
@@ -21,12 +30,15 @@ public class Student extends User {
     @Column(name = "receive_notifications", nullable = false)
     private boolean receiveNotifications;
 
+
+
     protected Student() {
     }
 
     private Student(Builder builder) {
         super(
                 builder.id,
+                builder.username,
                 builder.registration,
                 builder.name,
                 builder.email,
@@ -36,14 +48,16 @@ public class Student extends User {
         );
 
         this.course = builder.course;
-        this.currentSemester = builder.currentSemester;
+        this.currentPeriod = builder.currentPeriod;
         this.ira = builder.ira;
         this.receiveNotifications = builder.receiveNotifications;
     }
 
+
+
     public void updateAcademicData(
             Course newCourse,
-            Integer newCurrentSemester,
+            Integer newCurrentPeriod,
             Double newIra
     ) {
         Objects.requireNonNull(
@@ -51,11 +65,11 @@ public class Student extends User {
                 "O curso é obrigatório!"
         );
 
-        validateCurrentSemester(newCurrentSemester);
+        validateCurrentPeriod(newCurrentPeriod);
         validateIra(newIra);
 
         this.course = newCourse;
-        this.currentSemester = newCurrentSemester;
+        this.currentPeriod = newCurrentPeriod;
         this.ira = newIra;
     }
 
@@ -67,12 +81,14 @@ public class Student extends User {
         this.receiveNotifications = false;
     }
 
+
+
     public Course getCourse() {
         return course;
     }
 
-    public Integer getCurrentSemester() {
-        return currentSemester;
+    public Integer getCurrentPeriod() {
+        return currentPeriod;
     }
 
     public Double getIra() {
@@ -83,10 +99,12 @@ public class Student extends User {
         return receiveNotifications;
     }
 
-    private static void validateCurrentSemester(
-            Integer currentSemester
+
+
+    private static void validateCurrentPeriod(
+            Integer currentPeriod
     ) {
-        if (currentSemester == null || currentSemester < 1) {
+        if (currentPeriod == null || currentPeriod < 1) {
             throw new IllegalArgumentException(
                     "O período atual deve ser maior que zero!"
             );
@@ -101,41 +119,56 @@ public class Student extends User {
         }
     }
 
+
+
     public static class Builder {
 
         private Long id;
 
+        private final String username;
         private final Registration registration;
         private final String name;
         private final Email email;
         private final Password password;
         private final Course course;
-        private final Integer currentSemester;
+        private final Integer currentPeriod;
         private final Double ira;
 
         private String lattesUrl;
         private String description;
         private boolean receiveNotifications = false;
 
+
+
         public Builder(
+                String username,
                 Registration registration,
                 String name,
                 Email email,
                 Password password,
                 Course course,
-                Integer currentSemester,
+                Integer currentPeriod,
                 Double ira
         ) {
+            if (username == null || username.isBlank()) {
+                throw new IllegalArgumentException(
+                        "O nome de usuário é obrigatório!"
+                );
+            }
+
             if (name == null || name.isBlank()) {
                 throw new IllegalArgumentException(
                         "O nome é obrigatório!"
                 );
             }
 
+            this.username = username;
+
             this.registration = Objects.requireNonNull(
                     registration,
                     "O registro é obrigatório!"
             );
+
             this.name = name;
 
             this.email = Objects.requireNonNull(
@@ -153,9 +186,11 @@ public class Student extends User {
                     "O curso é obrigatório!"
             );
 
-            this.currentSemester = currentSemester;
+            this.currentPeriod = currentPeriod;
             this.ira = ira;
         }
+
+
 
         public Builder withId(Long id) {
             this.id = id;
@@ -179,13 +214,17 @@ public class Student extends User {
             return this;
         }
 
+
+
         public Student build() {
             validateInvariants();
             return new Student(this);
         }
 
+
+
         private void validateInvariants() {
-            validateCurrentSemester(currentSemester);
+            validateCurrentPeriod(currentPeriod);
             validateIra(ira);
         }
     }
