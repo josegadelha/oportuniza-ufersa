@@ -1,9 +1,12 @@
-package br.edu.ufersa.oportuniza.domain.entities;
+package br.edu.ufersa.oportuniza.proposalinterest;
+
+import br.edu.ufersa.oportuniza.projectproposal.ProjectProposal;
+import br.edu.ufersa.oportuniza.user.User;
+
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-
-import jakarta.persistence.*;
 
 @Entity 
 @Table(name = "proposal_interests")

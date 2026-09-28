@@ -1,8 +1,6 @@
-package br.edu.ufersa.oportuniza.api.dtos;
+package br.edu.ufersa.oportuniza.proposalinterest.dto;
 
 import java.time.LocalDateTime;
-
-import br.edu.ufersa.oportuniza.domain.entities.InterestStatus;
 
 public record ProposalInterestPatch(
 

@@ -1,9 +1,5 @@
-package br.edu.ufersa.oportuniza.api.controllers;
+package br.edu.ufersa.oportuniza.proposalinterest;
 
-import br.edu.ufersa.oportuniza.api.dtos.ProposalInterestCreate;
-import br.edu.ufersa.oportuniza.api.dtos.ProposalInterestPatch;
-import br.edu.ufersa.oportuniza.api.dtos.ProposalInterestResponse;
-import br.edu.ufersa.oportuniza.api.dtos.ProposalInterestUpdate;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

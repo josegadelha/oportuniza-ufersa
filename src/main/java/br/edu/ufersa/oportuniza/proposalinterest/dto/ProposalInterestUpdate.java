@@ -1,9 +1,8 @@
-package br.edu.ufersa.oportuniza.api.dtos;
+package br.edu.ufersa.oportuniza.proposalinterest.dto;
+
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
-
-import br.edu.ufersa.oportuniza.domain.entities.InterestStatus;
-import jakarta.validation.constraints.NotNull;
 
 public record ProposalInterestUpdate(
 

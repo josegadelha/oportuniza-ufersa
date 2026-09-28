@@ -1,2 +1,3 @@
-package br.edu.ufersa.oportuniza.domain.entities;
+package br.edu.ufersa.oportuniza.proposalinterest;
+
 public enum InterestStatus { PENDING, ACCEPTED, REJECTED }
