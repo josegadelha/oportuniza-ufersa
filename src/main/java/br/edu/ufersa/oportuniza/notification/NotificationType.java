@@ -1,4 +1,4 @@
-package br.edu.ufersa.oportuniza.domain.entities;
+package br.edu.ufersa.oportuniza.notification;
 
 public enum NotificationType {
     NEW_OPPORTUNITY,

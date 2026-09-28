@@ -1,11 +1,9 @@
-package br.edu.ufersa.oportuniza.domain.repositories;
-
-import java.util.List;
+package br.edu.ufersa.oportuniza.notification;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import br.edu.ufersa.oportuniza.domain.entities.Notification;
+import java.util.List;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {

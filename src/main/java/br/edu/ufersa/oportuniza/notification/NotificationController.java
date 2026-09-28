@@ -1,7 +1,5 @@
-package br.edu.ufersa.oportuniza.api.controllers;
+package br.edu.ufersa.oportuniza.notification;
 
-import br.edu.ufersa.oportuniza.api.dtos.NotificationCreate;
-import br.edu.ufersa.oportuniza.api.dtos.NotificationResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

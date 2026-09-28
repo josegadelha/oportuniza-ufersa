@@ -1,4 +1,6 @@
-package br.edu.ufersa.oportuniza.domain.entities;
+package br.edu.ufersa.oportuniza.notification;
+
+import br.edu.ufersa.oportuniza.user.User;
 
 import jakarta.persistence.*;
 

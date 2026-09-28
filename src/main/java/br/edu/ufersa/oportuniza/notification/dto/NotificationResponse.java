@@ -1,11 +1,9 @@
-package br.edu.ufersa.oportuniza.api.dtos;
+package br.edu.ufersa.oportuniza.notification.dto;
 
-import java.time.LocalDate;
-
-import br.edu.ufersa.oportuniza.domain.entities.Notification;
-import br.edu.ufersa.oportuniza.domain.entities.NotificationType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDate;
 
 public record NotificationResponse(
 
