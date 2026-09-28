@@ -1,9 +1,11 @@
-package br.edu.ufersa.oportuniza.domain.entities;
+package br.edu.ufersa.oportuniza.submission;
+
+import br.edu.ufersa.oportuniza.deliverable.Deliverable;
+
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-
-import jakarta.persistence.*;
 
 @Entity
 @Table(name = "submissions")

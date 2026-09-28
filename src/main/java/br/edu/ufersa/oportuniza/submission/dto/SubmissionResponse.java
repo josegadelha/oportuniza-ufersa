@@ -1,7 +1,5 @@
-package br.edu.ufersa.oportuniza.api.dtos;
+package br.edu.ufersa.oportuniza.submission.dto;
 
-import br.edu.ufersa.oportuniza.domain.entities.Submission;
-import br.edu.ufersa.oportuniza.domain.entities.SubmissionStatus;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;

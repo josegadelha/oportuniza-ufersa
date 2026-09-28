@@ -1,4 +1,4 @@
-package br.edu.ufersa.oportuniza.api.dtos;
+package br.edu.ufersa.oportuniza.submission.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

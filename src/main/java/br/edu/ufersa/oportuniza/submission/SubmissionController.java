@@ -1,7 +1,5 @@
-package br.edu.ufersa.oportuniza.api.controllers;
+package br.edu.ufersa.oportuniza.submission;
 
-import br.edu.ufersa.oportuniza.api.dtos.SubmissionCreate;
-import br.edu.ufersa.oportuniza.api.dtos.SubmissionResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
