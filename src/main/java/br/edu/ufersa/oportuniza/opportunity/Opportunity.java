@@ -1,12 +1,15 @@
-package br.edu.ufersa.oportuniza.domain.entities;
+package br.edu.ufersa.oportuniza.opportunity;
+
+import br.edu.ufersa.oportuniza.professor.Professor;
+import br.edu.ufersa.oportuniza.proposal.Proposal;
+
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import jakarta.persistence.*;
 
 @Entity 
 @Table(name = "opportunities")

@@ -1,17 +1,12 @@
-package br.edu.ufersa.oportuniza.api.controllers;
+package br.edu.ufersa.oportuniza.opportunity;
 
-import java.util.List;
-
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.edu.ufersa.oportuniza.api.dtos.OpportunityCreate;
-import br.edu.ufersa.oportuniza.api.dtos.OpportunityPatch;
-import br.edu.ufersa.oportuniza.api.dtos.OpportunityResponse;
-import br.edu.ufersa.oportuniza.api.dtos.OpportunityUpdate;
-import jakarta.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
