@@ -1,26 +1,34 @@
 package br.edu.ufersa.oportuniza.opportunity;
 
-import br.edu.ufersa.oportuniza.professor.Professor;
-import br.edu.ufersa.oportuniza.proposal.Proposal;
-
-import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Entity 
+import br.edu.ufersa.oportuniza.professor.Professor;
+import br.edu.ufersa.oportuniza.proposal.Proposal;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
 @Table(name = "opportunities")
 public class Opportunity extends Proposal {
-    
-    @Column(name = "professor_id", nullable = false)
-    private final Professor professor;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "professor_id", nullable = false)
+    private Professor professor;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
-    private final OpportunityType type;
+    private OpportunityType type;
 
     @Column(name = "positions", nullable = false)
     private Integer positions;
@@ -39,12 +47,24 @@ public class Opportunity extends Proposal {
     private LocalDate applicationDeadline;
 
     @ElementCollection
-    @CollectionTable(name = "opportunity_requirements", joinColumns = @JoinColumn(name = "opportunity_id"))
+    @CollectionTable(
+        name = "opportunity_requirements",
+        joinColumns = @JoinColumn(name = "opportunity_id")
+    )
     @Column(name = "requirement", nullable = false)
-    private List<String> requirements;
+    private List<String> requirements = new ArrayList<>();
+
+    protected Opportunity() {
+    }
 
     private Opportunity(Builder builder) {
-        super(builder.id, builder.title, builder.description, builder.publishedAt);
+        super(
+            builder.id,
+            builder.title,
+            builder.description,
+            builder.publishedAt
+        );
+
         this.professor = builder.professor;
         this.type = builder.type;
         this.positions = builder.positions;
@@ -53,7 +73,6 @@ public class Opportunity extends Proposal {
         this.status = builder.status;
         this.applicationDeadline = builder.applicationDeadline;
         this.requirements = new ArrayList<>(builder.requirements);
-
     }
 
     public boolean isRemunerated() {
