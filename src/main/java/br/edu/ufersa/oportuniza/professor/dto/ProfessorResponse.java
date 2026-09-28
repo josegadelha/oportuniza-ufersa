@@ -1,6 +1,6 @@
-package br.edu.ufersa.oportuniza.api.dtos;
+package br.edu.ufersa.oportuniza.professor.dto;
 
-import br.edu.ufersa.oportuniza.domain.entities.Department;
+import br.edu.ufersa.oportuniza.professor.Department;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +9,9 @@ public record ProfessorResponse(
 
         @NotNull(message = "O id não pode ser nulo na resposta!")
         Long id,
+
+        @NotBlank(message = "O nome de usuário não pode ser vazio na resposta!")
+        String username,
 
         @NotBlank(message = "O registro não pode ser vazio na resposta!")
         String registration,

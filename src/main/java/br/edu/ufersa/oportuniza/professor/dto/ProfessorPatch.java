@@ -1,6 +1,6 @@
-package br.edu.ufersa.oportuniza.api.dtos;
+package br.edu.ufersa.oportuniza.professor.dto;
 
-import br.edu.ufersa.oportuniza.domain.entities.Department;
+import br.edu.ufersa.oportuniza.professor.Department;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
