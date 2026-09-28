@@ -1,28 +1,43 @@
 services:
+    postgres:
+        image: postgres:18
+        container_name: oportuniza-postgres
 
-  postgres:
-    image: postgres:18
-    container_name: oportuniza-postgres
-    environment:
-      POSTGRES_DB: oportuniza
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_DB: oportuniza
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
 
-  app:
-    build: .
-    container_name: oportuniza
-    depends_on:
-      - postgres
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/oportuniza
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+        ports:
+            - "5432:5432"
+
+        volumes:
+            - postgres_data:/var/lib/postgresql
+
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres -d oportuniza"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+
+    app:
+        build: .
+        container_name: oportuniza
+
+        depends_on:
+            postgres:
+                condition: service_healthy
+
+        environment:
+            DB_URL: jdbc:postgresql://postgres:5432/oportuniza
+            DB_USERNAME: postgres
+            DB_PASSWORD: postgres
+            TOKEN_SECRET: oportuniza-secret-2026
+
+        ports:
+            - "8080:8080"
+
+        restart: unless-stopped
 
 volumes:
-  postgres_data:
+    postgres_data:
