@@ -1,10 +1,9 @@
 package br.edu.ufersa.oportuniza.submission.dto;
 
-import java.time.LocalDateTime;
-
-import br.edu.ufersa.oportuniza.submission.Submission;
 import br.edu.ufersa.oportuniza.submission.SubmissionStatus;
 import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
 
 public record SubmissionResponse(
 
@@ -14,6 +13,9 @@ public record SubmissionResponse(
         @NotNull(message = "O id do entregável não pode ser nulo na resposta!")
         Long deliverableId,
 
+        @NotNull(message = "O estudante não pode ser nulo na resposta!")
+        Long studentId,
+
         String filePath,
 
         LocalDateTime submittedAt,
@@ -21,13 +23,4 @@ public record SubmissionResponse(
         @NotNull(message = "O status não pode ser nulo na resposta!")
         SubmissionStatus status
 ) {
-
-    public static SubmissionResponse fromEntity(Submission submission) {
-        return new SubmissionResponse(
-                submission.getId(),
-                submission.getDeliverable().getId(),
-                submission.getFilePath(),
-                submission.getSubmittedAt(),
-                submission.getStatus());
-    }
 }

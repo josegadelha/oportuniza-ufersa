@@ -1,11 +1,10 @@
 package br.edu.ufersa.oportuniza.notification.dto;
 
-import java.time.LocalDate;
-
-import br.edu.ufersa.oportuniza.notification.Notification;
 import br.edu.ufersa.oportuniza.notification.NotificationType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDate;
 
 public record NotificationResponse(
 
@@ -30,15 +29,4 @@ public record NotificationResponse(
         @NotNull(message = "A data de envio não pode ser nula na resposta!")
         LocalDate sentAt
 ) {
-
-    public static NotificationResponse fromEntity(Notification notification) {
-        return new NotificationResponse(
-                notification.getId(),
-                notification.getRecipient().getId(),
-                notification.getTitle(),
-                notification.getMessage(),
-                notification.getType(),
-                notification.isRead(),
-                notification.getSentAt());
-    }
 }

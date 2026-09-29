@@ -2,6 +2,7 @@ package br.edu.ufersa.oportuniza.deliverable;
 
 import br.edu.ufersa.oportuniza.project.Project;
 import br.edu.ufersa.oportuniza.project.ProjectStatus;
+import br.edu.ufersa.oportuniza.shared.exception.DeliverableRuleViolationException;
 
 import jakarta.persistence.*;
 
@@ -47,6 +48,9 @@ public class Deliverable {
     public void postponeDeadline(LocalDate newDeadline) {
         ensureProjectIsActive();
         Objects.requireNonNull(newDeadline, "O novo prazo é obrigatório.");
+        if (newDeadline.isBefore(LocalDate.now()) || newDeadline.isBefore(project.getStartDate())) {
+            throw new IllegalArgumentException("O prazo não pode estar no passado ou antes do início do projeto.");
+        }
         if (this.deadline != null && newDeadline.isBefore(this.deadline)) {
             throw new IllegalArgumentException("O novo prazo não pode antecipar o prazo já vigente.");
         }
@@ -55,7 +59,7 @@ public class Deliverable {
 
     private void ensureProjectIsActive() {
         if (project.getStatus() != ProjectStatus.ACTIVE) {
-            throw new IllegalStateException(
+            throw new DeliverableRuleViolationException(
                     "Não é permitido alterar entregáveis de projetos que não estão ativos.");
         }
     }
@@ -120,8 +124,11 @@ public class Deliverable {
         }
 
         private void validateInvariants() {
-            if (deadline != null && deadline.isBefore(project.getStartDate())) {
-                throw new IllegalArgumentException("O prazo do entregável não pode ser anterior ao início do projeto.");
+            if (project.getStatus() != ProjectStatus.ACTIVE) {
+                throw new DeliverableRuleViolationException("Entregas só podem ser criadas para projetos ativos.");
+            }
+            if (deadline == null || deadline.isBefore(LocalDate.now()) || deadline.isBefore(project.getStartDate())) {
+                throw new IllegalArgumentException("O prazo é obrigatório e não pode estar no passado ou antes do início do projeto.");
             }
         }
     }

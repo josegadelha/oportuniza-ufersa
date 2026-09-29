@@ -1,14 +1,31 @@
 package br.edu.ufersa.oportuniza.submission;
 
 import br.edu.ufersa.oportuniza.deliverable.Deliverable;
-
-import jakarta.persistence.*;
+import br.edu.ufersa.oportuniza.shared.exception.SubmissionRuleViolationException;
+import br.edu.ufersa.oportuniza.student.Student;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "submissions")
+@Table(name = "submissions", uniqueConstraints = @UniqueConstraint(columnNames = {"deliverable_id", "student_id"}))
 public class Submission {
 
     @Id
@@ -19,6 +36,10 @@ public class Submission {
     @JoinColumn(name = "deliverable_id", nullable = false)
     private Deliverable deliverable;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "student_id", nullable = false)
+    private Student student;
+
     @Column(name = "file_path", length = 255)
     private String filePath;
 
@@ -27,67 +48,55 @@ public class Submission {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private SubmissionStatus status;
+    private SubmissionStatus status = SubmissionStatus.WAITING;
+
+    @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("versionNumber ASC")
+    private List<SubmissionVersion> versions = new ArrayList<>();
 
     protected Submission() {
     }
 
-    private Submission(Builder builder) {
-        this.id = builder.id;
-        this.deliverable = builder.deliverable;
-        this.filePath = builder.filePath;
-        this.submittedAt = builder.submittedAt;
-        this.status = builder.status;
+    public Submission(Deliverable deliverable, Student student) {
+        this.deliverable = Objects.requireNonNull(deliverable, "A entrega é obrigatória.");
+        this.student = Objects.requireNonNull(student, "O estudante é obrigatório.");
     }
 
-    public void submit(String filePath) {
-        if (filePath == null || filePath.isBlank()) {
-            throw new IllegalArgumentException("O caminho do arquivo é obrigatório para o envio.");
+    public void submit(String newFilePath) {
+        if (newFilePath == null || newFilePath.isBlank() || newFilePath.length() > 255) {
+            throw new IllegalArgumentException("O caminho do arquivo deve ter entre 1 e 255 caracteres.");
         }
-        validateTransition(SubmissionStatus.PENDING);
-        this.filePath = filePath;
+        if (!status.canTransitionTo(SubmissionStatus.PENDING)) {
+            throw new SubmissionRuleViolationException("Esta submissão não aceita novos envios.");
+        }
+        this.filePath = newFilePath;
         this.submittedAt = LocalDateTime.now();
         this.status = SubmissionStatus.PENDING;
+        this.versions.add(new SubmissionVersion(this, versions.size() + 1, newFilePath, submittedAt));
     }
 
     public void approve() {
-        validateTransition(SubmissionStatus.APPROVED);
-        this.status = SubmissionStatus.APPROVED;
+        transitionTo(SubmissionStatus.APPROVED);
     }
 
     public void reject() {
-        validateTransition(SubmissionStatus.REJECTED);
-        this.status = SubmissionStatus.REJECTED;
+        transitionTo(SubmissionStatus.REJECTED);
     }
 
-    private void validateTransition(SubmissionStatus nextStatus) {
-        if (!this.status.canTransitionTo(nextStatus)) {
-            throw new IllegalStateException(
-                    String.format("Transição inválida: submissão está em '%s' e não pode ir para '%s'.",
-                            this.status, nextStatus)
-            );
+    private void transitionTo(SubmissionStatus next) {
+        if (!status.canTransitionTo(next)) {
+            throw new SubmissionRuleViolationException("Transição inválida da submissão.");
         }
+        this.status = next;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Deliverable getDeliverable() {
-        return deliverable;
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public LocalDateTime getSubmittedAt() {
-        return submittedAt;
-    }
-
-    public SubmissionStatus getStatus() {
-        return status;
-    }
+    public Long getId() { return id; }
+    public Deliverable getDeliverable() { return deliverable; }
+    public Student getStudent() { return student; }
+    public String getFilePath() { return filePath; }
+    public LocalDateTime getSubmittedAt() { return submittedAt; }
+    public SubmissionStatus getStatus() { return status; }
+    public List<SubmissionVersion> getVersions() { return List.copyOf(versions); }
 
     @Override
     public boolean equals(Object o) {
@@ -97,60 +106,5 @@ public class Submission {
     }
 
     @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
-    public static class Builder {
-
-        //Obrigatório
-        private final Deliverable deliverable;
-
-        //Opcionais
-        private Long id;
-        private String filePath;
-        private LocalDateTime submittedAt;
-        private SubmissionStatus status = SubmissionStatus.WAITING;
-
-        public Builder(Deliverable deliverable) {
-            this.deliverable = Objects.requireNonNull(deliverable, "O entregável é obrigatório!");
-        }
-
-        public Builder withId(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder withFilePath(String filePath) {
-            this.filePath = filePath;
-            return this;
-        }
-
-        public Builder withSubmittedAt(LocalDateTime submittedAt) {
-            this.submittedAt = submittedAt;
-            return this;
-        }
-
-        public Builder withStatus(SubmissionStatus status) {
-            this.status = status;
-            return this;
-        }
-
-        public Submission build() {
-            validateInvariants();
-            return new Submission(this);
-        }
-
-        private void validateInvariants() {
-            if (status == SubmissionStatus.WAITING) {
-                return;
-            }
-            if (filePath == null || filePath.isBlank()) {
-                throw new IllegalArgumentException("O caminho do arquivo é obrigatório quando a submissão não está aguardando envio.");
-            }
-            if (submittedAt == null) {
-                throw new IllegalArgumentException("A data de envio é obrigatória quando a submissão não está aguardando envio.");
-            }
-        }
-    }
+    public int hashCode() { return getClass().hashCode(); }
 }

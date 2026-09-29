@@ -1,5 +1,6 @@
 package br.edu.ufersa.oportuniza.project.dto;
 
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -11,6 +12,7 @@ public record ProjectUpdate(
         String title,
 
         @NotNull(message = "A data de encerramento é obrigatória!")
+        @FutureOrPresent(message = "A data de encerramento não pode estar no passado!")
         LocalDate endDate
 ) {
 }

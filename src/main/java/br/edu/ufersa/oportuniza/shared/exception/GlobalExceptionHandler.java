@@ -108,6 +108,15 @@ public class GlobalExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(BusinessRuleViolationException.class)
+    public ProblemDetail handleBusinessRuleViolation(BusinessRuleViolationException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problem.setType(URI.create("about:blank"));
+        problem.setTitle("Regra de negócio violada");
+        problem.setProperty("timestamp", Instant.now());
+        return problem;
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ProblemDetail handleDataIntegrityViolation(
             DataIntegrityViolationException ex
