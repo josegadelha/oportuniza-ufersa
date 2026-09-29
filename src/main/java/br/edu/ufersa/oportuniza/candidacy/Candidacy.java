@@ -1,13 +1,15 @@
 package br.edu.ufersa.oportuniza.candidacy;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
+import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
 import br.edu.ufersa.oportuniza.student.Student;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,7 +21,9 @@ import jakarta.persistence.UniqueConstraint;
 @Entity
 @Table(
         name = "candidacies",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"student_id", "opportunity_id"})
+        uniqueConstraints = @UniqueConstraint(
+                columnNames = {"student_id", "opportunity_id"}
+        )
 )
 class Candidacy {
 
@@ -27,7 +31,7 @@ class Candidacy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 
@@ -53,36 +57,49 @@ class Candidacy {
     }
 
     public void updateStatus(CandidacyStatus nextStatus) {
-        CandidacyStatus status = Objects.requireNonNull(
+        CandidacyStatus status = BusinessValidation.requireNonNull(
                 nextStatus,
                 "O status da candidatura é obrigatório!"
         );
 
         if (!isValidTransition(this.status, status)) {
-            throw new IllegalArgumentException("Transição de status inválida para a candidatura.");
+            throw new IllegalArgumentException(
+                    "Transição de status inválida para a candidatura."
+            );
         }
 
         this.status = status;
     }
 
-    private static boolean isValidTransition(CandidacyStatus current, CandidacyStatus next) {
+    private static boolean isValidTransition(
+            CandidacyStatus current,
+            CandidacyStatus next
+    ) {
         if (current == null) {
             return true;
         }
 
         return switch (current) {
-            case IN_SELECTION -> next == CandidacyStatus.HISTORY_REVIEW
+            case IN_SELECTION ->
+                    next == CandidacyStatus.HISTORY_REVIEW
                     || next == CandidacyStatus.REJECTED
                     || next == CandidacyStatus.WITHDRAWN;
-            case HISTORY_REVIEW -> next == CandidacyStatus.INTERVIEW
+
+            case HISTORY_REVIEW ->
+                    next == CandidacyStatus.INTERVIEW
                     || next == CandidacyStatus.REJECTED
                     || next == CandidacyStatus.WITHDRAWN;
-            case INTERVIEW -> next == CandidacyStatus.FINAL_REVIEW
+
+            case INTERVIEW ->
+                    next == CandidacyStatus.FINAL_REVIEW
                     || next == CandidacyStatus.REJECTED
                     || next == CandidacyStatus.WITHDRAWN;
-            case FINAL_REVIEW -> next == CandidacyStatus.APPROVED
+
+            case FINAL_REVIEW ->
+                    next == CandidacyStatus.APPROVED
                     || next == CandidacyStatus.REJECTED
                     || next == CandidacyStatus.WITHDRAWN;
+
             case APPROVED, REJECTED, WITHDRAWN -> false;
         };
     }
@@ -117,42 +134,42 @@ class Candidacy {
         private LocalDateTime appliedAt = LocalDateTime.now();
         private CandidacyStatus status = CandidacyStatus.IN_SELECTION;
 
-        public Builder(Student student, Long opportunityId) {
-            this.student = Objects.requireNonNull(
-                student,
-                "O estudante é obrigatório!"
+        Builder(Student student, Long opportunityId) {
+            this.student = BusinessValidation.requireNonNull(
+                    student,
+                    "O estudante é obrigatório!"
             );
 
-            this.opportunityId = Objects.requireNonNull(
-                opportunityId,
-                "A oportunidade é obrigatória!"
+            this.opportunityId = BusinessValidation.requireNonNull(
+                    opportunityId,
+                    "A oportunidade é obrigatória!"
             );
         }
 
-        public Builder withId(Long id) {
+        Builder withId(Long id) {
             this.id = id;
             return this;
         }
 
-        public Builder withAppliedAt(LocalDateTime appliedAt) {
-            this.appliedAt = Objects.requireNonNull(
-                appliedAt,
-                "A data da candidatura é obrigatória!"
+        Builder withAppliedAt(LocalDateTime appliedAt) {
+            this.appliedAt = BusinessValidation.requireNonNull(
+                    appliedAt,
+                    "A data da candidatura é obrigatória!"
             );
 
             return this;
         }
 
-        public Builder withStatus(CandidacyStatus status) {
-            this.status = Objects.requireNonNull(
-                status,
-                "O status da candidatura é obrigatório!"
+        Builder withStatus(CandidacyStatus status) {
+            this.status = BusinessValidation.requireNonNull(
+                    status,
+                    "O status da candidatura é obrigatório!"
             );
 
             return this;
         }
 
-        public Candidacy build() {
+        Candidacy build() {
             return new Candidacy(this);
         }
     }

@@ -7,7 +7,7 @@ import br.edu.ufersa.oportuniza.project.ProjectStatus;
 import br.edu.ufersa.oportuniza.shared.exception.SubmissionRuleViolationException;
 import br.edu.ufersa.oportuniza.student.Student;
 import br.edu.ufersa.oportuniza.user.User;
-import org.springframework.security.access.AccessDeniedException;
+import br.edu.ufersa.oportuniza.shared.exception.ResourceAccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,7 +24,7 @@ public class SubmissionService {
     public Student requireSubmitter(Deliverable deliverable, User actor) {
         Project project = deliverable.getProject();
         if (!(actor instanceof Student student)) {
-            throw new AccessDeniedException("Somente estudantes podem enviar entregas.");
+            throw new ResourceAccessDeniedException("Somente estudantes podem enviar entregas.");
         }
         projects.requireMember(project, actor);
         if (project.getStatus() != ProjectStatus.ACTIVE) {

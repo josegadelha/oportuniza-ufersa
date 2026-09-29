@@ -1,13 +1,14 @@
 package br.edu.ufersa.oportuniza.proposalinterest;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
+import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
 import br.edu.ufersa.oportuniza.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,7 +27,7 @@ class ProposalInterest {
     @Column(name = "project_proposal_id", nullable = false)
     private Long projectProposalId;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -76,7 +77,7 @@ class ProposalInterest {
         return createdAt;
     }
 
-    public static class Builder {
+    static class Builder {
 
         private Long id;
 
@@ -86,42 +87,42 @@ class ProposalInterest {
         private InterestStatus status = InterestStatus.PENDING;
         private LocalDateTime createdAt = LocalDateTime.now();
 
-        public Builder(Long projectProposalId, User user) {
-            this.projectProposalId = Objects.requireNonNull(
-                projectProposalId,
-                "A proposta de projeto é obrigatória!"
+        Builder(Long projectProposalId, User user) {
+            this.projectProposalId = BusinessValidation.requireNonNull(
+                    projectProposalId,
+                    "A proposta de projeto é obrigatória!"
             );
 
-            this.user = Objects.requireNonNull(
-                user,
-                "O usuário interessado é obrigatório!"
+            this.user = BusinessValidation.requireNonNull(
+                    user,
+                    "O usuário interessado é obrigatório!"
             );
         }
 
-        public Builder withId(Long id) {
+        Builder withId(Long id) {
             this.id = id;
             return this;
         }
 
-        public Builder withStatus(InterestStatus status) {
-            this.status = Objects.requireNonNull(
-                status,
-                "O status do interesse é obrigatório!"
+        Builder withStatus(InterestStatus status) {
+            this.status = BusinessValidation.requireNonNull(
+                    status,
+                    "O status do interesse é obrigatório!"
             );
 
             return this;
         }
 
-        public Builder withCreatedAt(LocalDateTime createdAt) {
-            this.createdAt = Objects.requireNonNull(
-                createdAt,
-                "A data de criação é obrigatória!"
+        Builder withCreatedAt(LocalDateTime createdAt) {
+            this.createdAt = BusinessValidation.requireNonNull(
+                    createdAt,
+                    "A data de criação é obrigatória!"
             );
 
             return this;
         }
 
-        public ProposalInterest build() {
+        ProposalInterest build() {
             return new ProposalInterest(this);
         }
     }

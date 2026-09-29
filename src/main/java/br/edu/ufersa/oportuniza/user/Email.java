@@ -1,5 +1,7 @@
 package br.edu.ufersa.oportuniza.user;
 
+import br.edu.ufersa.oportuniza.shared.exception.InvalidBusinessDataException;
+
 import jakarta.persistence.Embeddable;
 
 @Embeddable
@@ -7,11 +9,11 @@ public record Email(String value) {
 
     public Email {
         if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException("O email é obrigatório!");
+            throw new InvalidBusinessDataException("O email é obrigatório!");
         }
 
         if (!value.contains("@")) {
-            throw new IllegalArgumentException("O email é inválido!");
+            throw new InvalidBusinessDataException("O email é inválido!");
         }
     }
 }

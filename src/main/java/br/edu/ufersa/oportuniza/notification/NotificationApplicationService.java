@@ -3,7 +3,7 @@ package br.edu.ufersa.oportuniza.notification;
 import br.edu.ufersa.oportuniza.notification.dto.NotificationResponse;
 import br.edu.ufersa.oportuniza.shared.exception.ResourceNotFoundException;
 import br.edu.ufersa.oportuniza.user.User;
-import org.springframework.security.access.AccessDeniedException;
+import br.edu.ufersa.oportuniza.shared.exception.ResourceAccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +48,7 @@ public class NotificationApplicationService {
         Notification notification = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Notificação não encontrada."));
         if (!notification.belongsTo(user.getId())) {
-            throw new AccessDeniedException("Esta notificação pertence a outro usuário.");
+            throw new ResourceAccessDeniedException("Esta notificação pertence a outro usuário.");
         }
         return notification;
     }

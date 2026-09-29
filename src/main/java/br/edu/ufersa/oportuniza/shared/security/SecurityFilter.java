@@ -11,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import org.springframework.stereotype.Component;
 
@@ -49,19 +50,21 @@ public class SecurityFilter extends OncePerRequestFilter {
             String subject = tokenService.validateToken(token);
 
             if (subject != null) {
-                UserDetails user =
-                        userDetailsService.loadUserByUsername(subject);
+                try {
+                    UserDetails user = userDetailsService.loadUserByUsername(subject);
+                    var authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    user,
+                                    null,
+                                    user.getAuthorities());
 
-                var authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                user,
-                                null,
-                                user.getAuthorities()
-                        );
-
-                SecurityContextHolder
-                        .getContext()
-                        .setAuthentication(authentication);
+                    SecurityContextHolder
+                            .getContext()
+                            .setAuthentication(authentication);
+                } catch (UsernameNotFoundException ignored) {
+                    SecurityContextHolder
+                            .clearContext();
+                }
             }
         }
 

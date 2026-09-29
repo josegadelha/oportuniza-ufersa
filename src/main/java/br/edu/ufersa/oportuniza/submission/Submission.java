@@ -1,5 +1,8 @@
 package br.edu.ufersa.oportuniza.submission;
 
+import br.edu.ufersa.oportuniza.shared.exception.InvalidBusinessDataException;
+import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
+
 import br.edu.ufersa.oportuniza.deliverable.Deliverable;
 import br.edu.ufersa.oportuniza.shared.exception.SubmissionRuleViolationException;
 import br.edu.ufersa.oportuniza.student.Student;
@@ -22,7 +25,6 @@ import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "submissions", uniqueConstraints = @UniqueConstraint(columnNames = {"deliverable_id", "student_id"}))
@@ -58,13 +60,13 @@ public class Submission {
     }
 
     public Submission(Deliverable deliverable, Student student) {
-        this.deliverable = Objects.requireNonNull(deliverable, "A entrega é obrigatória.");
-        this.student = Objects.requireNonNull(student, "O estudante é obrigatório.");
+        this.deliverable = BusinessValidation.requireNonNull(deliverable, "A entrega é obrigatória.");
+        this.student = BusinessValidation.requireNonNull(student, "O estudante é obrigatório.");
     }
 
     public void submit(String newFilePath) {
         if (newFilePath == null || newFilePath.isBlank() || newFilePath.length() > 255) {
-            throw new IllegalArgumentException("O caminho do arquivo deve ter entre 1 e 255 caracteres.");
+            throw new InvalidBusinessDataException("O caminho do arquivo deve ter entre 1 e 255 caracteres.");
         }
         if (!status.canTransitionTo(SubmissionStatus.PENDING)) {
             throw new SubmissionRuleViolationException("Esta submissão não aceita novos envios.");

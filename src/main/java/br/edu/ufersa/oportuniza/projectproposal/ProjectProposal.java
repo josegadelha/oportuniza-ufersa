@@ -3,9 +3,9 @@ package br.edu.ufersa.oportuniza.projectproposal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import br.edu.ufersa.oportuniza.proposal.ProposalStatus;
+import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
 import br.edu.ufersa.oportuniza.student.Student;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -48,8 +48,8 @@ class ProjectProposal {
 
     @ElementCollection
     @CollectionTable(
-        name = "project_proposal_desired_skills",
-        joinColumns = @JoinColumn(name = "project_proposal_id")
+            name = "project_proposal_desired_skills",
+            joinColumns = @JoinColumn(name = "project_proposal_id")
     )
     @Column(name = "desired_skill", nullable = false)
     private List<String> desiredSkills = new ArrayList<>();
@@ -59,19 +59,24 @@ class ProjectProposal {
 
     private ProjectProposal(Builder builder) {
         this.id = builder.id;
-        this.title = requireText(builder.title, "O título é obrigatório!");
-        this.description = requireText(builder.description, "A descrição é obrigatória!");
+        this.title = requireText(
+                builder.title,
+                "O título é obrigatório!"
+        );
+        this.description = requireText(
+                builder.description,
+                "A descrição é obrigatória!"
+        );
         this.publishedAt = builder.publishedAt;
-
         this.student = builder.student;
         this.status = builder.status;
         this.desiredSkills = new ArrayList<>(builder.desiredSkills);
     }
 
     public void updateStatus(ProposalStatus status) {
-        this.status = Objects.requireNonNull(
-            status,
-            "O status da proposta é obrigatório!"
+        this.status = BusinessValidation.requireNonNull(
+                status,
+                "O status da proposta é obrigatório!"
         );
     }
 
@@ -99,15 +104,19 @@ class ProjectProposal {
         return publishedAt;
     }
 
-    private static String requireText(String value, String message) {
+    public List<String> getDesiredSkills() {
+        return List.copyOf(desiredSkills);
+    }
+
+    private static String requireText(
+            String value,
+            String message
+    ) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException(message);
         }
-        return value;
-    }
 
-    public List<String> getDesiredSkills() {
-        return List.copyOf(desiredSkills);
+        return value;
     }
 
     static class Builder {
@@ -122,49 +131,49 @@ class ProjectProposal {
         private LocalDateTime publishedAt;
         private List<String> desiredSkills = new ArrayList<>();
 
-        public Builder(
-            Student student,
-            String title,
-            String description
+        Builder(
+                Student student,
+                String title,
+                String description
         ) {
-            this.student = Objects.requireNonNull(
-                student,
-                "O estudante é obrigatório!"
+            this.student = BusinessValidation.requireNonNull(
+                    student,
+                    "O estudante é obrigatório!"
             );
 
             this.title = title;
             this.description = description;
         }
 
-        public Builder withId(Long id) {
+        Builder withId(Long id) {
             this.id = id;
             return this;
         }
 
-        public Builder withStatus(ProposalStatus status) {
-            this.status = Objects.requireNonNull(
-                status,
-                "O status da proposta é obrigatório!"
+        Builder withStatus(ProposalStatus status) {
+            this.status = BusinessValidation.requireNonNull(
+                    status,
+                    "O status da proposta é obrigatório!"
             );
 
             return this;
         }
 
-        public Builder withPublishedAt(LocalDateTime publishedAt) {
+        Builder withPublishedAt(LocalDateTime publishedAt) {
             this.publishedAt = publishedAt;
             return this;
         }
 
-        public Builder withDesiredSkills(List<String> desiredSkills) {
+        Builder withDesiredSkills(List<String> desiredSkills) {
             this.desiredSkills =
-                desiredSkills == null
-                    ? new ArrayList<>()
-                    : new ArrayList<>(desiredSkills);
+                    desiredSkills == null
+                            ? new ArrayList<>()
+                            : new ArrayList<>(desiredSkills);
 
             return this;
         }
 
-        public ProjectProposal build() {
+        ProjectProposal build() {
             return new ProjectProposal(this);
         }
     }

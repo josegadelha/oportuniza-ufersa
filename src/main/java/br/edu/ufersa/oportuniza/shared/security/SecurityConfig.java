@@ -20,9 +20,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final SecurityFilter securityFilter;
+    private final ProblemAuthenticationHandlers problemHandlers;
 
-    public SecurityConfig(SecurityFilter securityFilter) {
+    public SecurityConfig(SecurityFilter securityFilter, ProblemAuthenticationHandlers problemHandlers) {
         this.securityFilter = securityFilter;
+        this.problemHandlers = problemHandlers;
     }
 
     @Bean
@@ -32,6 +34,9 @@ public class SecurityConfig {
                 .sessionManagement(sm ->
                         sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(problemHandlers.entryPoint())
+                        .accessDeniedHandler(problemHandlers.accessDeniedHandler()))
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll();
 

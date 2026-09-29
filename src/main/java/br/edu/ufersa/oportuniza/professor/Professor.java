@@ -1,5 +1,8 @@
 package br.edu.ufersa.oportuniza.professor;
 
+import br.edu.ufersa.oportuniza.shared.exception.InvalidBusinessDataException;
+import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
+
 import br.edu.ufersa.oportuniza.user.Email;
 import br.edu.ufersa.oportuniza.user.Password;
 import br.edu.ufersa.oportuniza.user.Registration;
@@ -11,7 +14,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 
-import java.util.Objects;
 
 @Entity
 @Table(name = "tb_professors")
@@ -44,7 +46,7 @@ public class Professor extends User {
 
 
     public void changeDepartment(Department newDepartment) {
-        this.department = Objects.requireNonNull(
+        this.department = BusinessValidation.requireNonNull(
                 newDepartment,
                 "O departamento é obrigatório!"
         );
@@ -83,37 +85,37 @@ public class Professor extends User {
                 Department department
         ) {
             if (username == null || username.isBlank()) {
-                throw new IllegalArgumentException(
+                throw new InvalidBusinessDataException(
                         "O nome de usuário é obrigatório!"
                 );
             }
 
             if (name == null || name.isBlank()) {
-                throw new IllegalArgumentException(
+                throw new InvalidBusinessDataException(
                         "O nome é obrigatório!"
                 );
             }
 
             this.username = username;
 
-            this.registration = Objects.requireNonNull(
+            this.registration = BusinessValidation.requireNonNull(
                     registration,
                     "O registro é obrigatório!"
             );
 
             this.name = name;
 
-            this.email = Objects.requireNonNull(
+            this.email = BusinessValidation.requireNonNull(
                     email,
                     "O email é obrigatório!"
             );
 
-            this.password = Objects.requireNonNull(
+            this.password = BusinessValidation.requireNonNull(
                     password,
                     "A senha é obrigatória!"
             );
 
-            this.department = Objects.requireNonNull(
+            this.department = BusinessValidation.requireNonNull(
                     department,
                     "O departamento é obrigatório!"
             );
