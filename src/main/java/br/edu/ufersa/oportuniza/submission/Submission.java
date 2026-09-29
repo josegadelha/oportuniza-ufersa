@@ -1,9 +1,12 @@
 package br.edu.ufersa.oportuniza.submission;
 
-import br.edu.ufersa.oportuniza.shared.exception.InvalidBusinessDataException;
-import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.edu.ufersa.oportuniza.deliverable.Deliverable;
+import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
+import br.edu.ufersa.oportuniza.shared.exception.InvalidBusinessDataException;
 import br.edu.ufersa.oportuniza.shared.exception.SubmissionRuleViolationException;
 import br.edu.ufersa.oportuniza.student.Student;
 import jakarta.persistence.CascadeType;
@@ -21,10 +24,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "submissions", uniqueConstraints = @UniqueConstraint(columnNames = {"deliverable_id", "student_id"}))

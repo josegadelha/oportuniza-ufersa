@@ -12,7 +12,12 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "deliverables")
+@Table(
+        name = "deliverables",
+        uniqueConstraints = @UniqueConstraint(
+                columnNames = {"project_id", "title"}
+        )
+)
 public class Deliverable {
 
     @Id
