@@ -137,7 +137,7 @@ public class Notification {
         }
 
         public Builder withSentAt(LocalDate sentAt) {
-            this.sentAt = sentAt;
+            this.sentAt = Objects.requireNonNull(sentAt, "A data de envio é obrigatória.");
             return this;
         }
 

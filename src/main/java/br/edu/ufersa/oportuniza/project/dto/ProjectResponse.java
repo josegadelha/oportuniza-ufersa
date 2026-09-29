@@ -1,12 +1,11 @@
 package br.edu.ufersa.oportuniza.project.dto;
 
-import java.time.LocalDate;
-import java.util.Set;
-
-import br.edu.ufersa.oportuniza.project.Project;
 import br.edu.ufersa.oportuniza.project.ProjectStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDate;
+import java.util.List;
 
 public record ProjectResponse(
 
@@ -25,20 +24,9 @@ public record ProjectResponse(
         ProjectStatus status,
 
         @NotNull(message = "Os orientadores não podem ser nulos na resposta!")
-        Set<Long> advisorIds,
+        List<Long> advisorIds,
 
         @NotNull(message = "Os participantes não podem ser nulos na resposta!")
-        Set<Long> memberIds
+        List<Long> memberIds
 ) {
-
-    public static ProjectResponse fromEntity(Project project) {
-        return new ProjectResponse(
-                project.getId(),
-                project.getTitle(),
-                project.getStartDate(),
-                project.getEndDate(),
-                project.getStatus(),
-                project.getAdvisors().stream().map(p -> p.getId()).collect(java.util.stream.Collectors.toSet()),
-                project.getMembers().stream().map(s -> s.getId()).collect(java.util.stream.Collectors.toSet()));
-    }
 }

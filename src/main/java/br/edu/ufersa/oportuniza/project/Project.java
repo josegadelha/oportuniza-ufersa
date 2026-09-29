@@ -1,15 +1,16 @@
 package br.edu.ufersa.oportuniza.project;
 
 import br.edu.ufersa.oportuniza.professor.Professor;
+import br.edu.ufersa.oportuniza.shared.exception.ProjectRuleViolationException;
 import br.edu.ufersa.oportuniza.student.Student;
+import br.edu.ufersa.oportuniza.user.User;
 
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "projects")
@@ -38,7 +39,7 @@ public class Project {
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "professor_id")
     )
-    private Set<Professor> advisors = new HashSet<>();
+    private List<Professor> advisors = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -46,7 +47,7 @@ public class Project {
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "student_id")
     )
-    private Set<Student> members = new HashSet<>();
+    private List<Student> members = new ArrayList<>();
 
     protected Project() {
     }
@@ -57,7 +58,8 @@ public class Project {
         this.startDate = builder.startDate;
         this.endDate = builder.endDate;
         this.status = builder.status;
-        this.advisors = builder.advisors;
+        this.advisors = new ArrayList<>(builder.advisors);
+        this.members = new ArrayList<>(builder.members);
     }
 
     public void complete() {
@@ -73,7 +75,7 @@ public class Project {
 
     public void renameTitle(String newTitle) {
         if (this.status != ProjectStatus.ACTIVE) {
-            throw new IllegalStateException("Não é permitido renomear projetos que não estão ativos.");
+            throw new ProjectRuleViolationException("Não é permitido renomear projetos que não estão ativos.");
         }
         if (newTitle == null || newTitle.isBlank()) {
             throw new IllegalArgumentException("O título não pode ser vazio.");
@@ -83,9 +85,12 @@ public class Project {
 
     public void extendEndDate(LocalDate newEndDate) {
         if (this.status != ProjectStatus.ACTIVE) {
-            throw new IllegalStateException("Não é possível alterar a data de encerramento de projetos que não estão ativos.");
+            throw new ProjectRuleViolationException("Não é possível alterar a data de encerramento de projetos que não estão ativos.");
         }
         Objects.requireNonNull(newEndDate, "A nova data de encerramento é obrigatória.");
+        if (newEndDate.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("A data de encerramento não pode estar no passado.");
+        }
         if (newEndDate.isBefore(this.startDate)) {
             throw new IllegalArgumentException("A data de encerramento não pode ser anterior à data de início.");
         }
@@ -97,36 +102,46 @@ public class Project {
 
     public void addAdvisor(Professor professor) {
         if (this.status != ProjectStatus.ACTIVE) {
-            throw new IllegalStateException("Não é possível adicionar orientadores a projetos que não estão ativos.");
+            throw new ProjectRuleViolationException("Não é possível adicionar orientadores a projetos que não estão ativos.");
         }
-        Objects.requireNonNull(professor, "O professor é obrigatório.");
-        this.advisors.add(professor);
+        addUnique(this.advisors, professor, "O professor é obrigatório.");
     }
 
     public void removeAdvisor(Professor professor) {
         Objects.requireNonNull(professor, "O professor é obrigatório.");
-        if (this.advisors.size() <= 1 && this.advisors.contains(professor)) {
-            throw new IllegalStateException("O projeto deve manter pelo menos um professor orientador.");
+        boolean isAdvisor = this.advisors.stream().anyMatch(advisor -> sameUser(advisor, professor));
+        if (this.advisors.size() <= 1 && isAdvisor) {
+            throw new ProjectRuleViolationException("O projeto deve manter pelo menos um professor orientador.");
         }
-        this.advisors.remove(professor);
+        this.advisors.removeIf(advisor -> sameUser(advisor, professor));
     }
 
     public void addMember(Student student) {
         if (this.status != ProjectStatus.ACTIVE) {
-            throw new IllegalStateException("Não é possível adicionar participantes a projetos que não estão ativos.");
+            throw new ProjectRuleViolationException("Não é possível adicionar participantes a projetos que não estão ativos.");
         }
-        Objects.requireNonNull(student, "O aluno é obrigatório.");
-        this.members.add(student);
+        addUnique(this.members, student, "O aluno é obrigatório.");
     }
 
     public void removeMember(Student student) {
         Objects.requireNonNull(student, "O aluno é obrigatório.");
-        this.members.remove(student);
+        this.members.removeIf(member -> sameUser(member, student));
+    }
+
+    private static <T extends User> void addUnique(List<T> users, T user, String message) {
+        Objects.requireNonNull(user, message);
+        if (users.stream().noneMatch(existing -> sameUser(existing, user))) {
+            users.add(user);
+        }
+    }
+
+    private static boolean sameUser(User first, User second) {
+        return first == second || first.getId() != null && first.getId().equals(second.getId());
     }
 
     private void validateTransition(ProjectStatus nextStatus) {
         if (!this.status.canTransitionTo(nextStatus)) {
-            throw new IllegalStateException(
+            throw new ProjectRuleViolationException(
                     String.format("Transição inválida: projeto está em '%s' e não pode ir para '%s'.",
                             this.status, nextStatus)
             );
@@ -153,12 +168,12 @@ public class Project {
         return status;
     }
 
-    public Set<Professor> getAdvisors() {
-        return Collections.unmodifiableSet(advisors);
+    public List<Professor> getAdvisors() {
+        return List.copyOf(advisors);
     }
 
-    public Set<Student> getMembers() {
-        return Collections.unmodifiableSet(members);
+    public List<Student> getMembers() {
+        return List.copyOf(members);
     }
 
     public boolean hasAdvisor(Long professorId) {
@@ -166,6 +181,10 @@ public class Project {
             return false;
         }
         return advisors.stream().anyMatch(p -> professorId.equals(p.getId()));
+    }
+
+    public boolean hasMember(Long studentId) {
+        return studentId != null && members.stream().anyMatch(s -> studentId.equals(s.getId()));
     }
 
     @Override
@@ -184,12 +203,13 @@ public class Project {
 
         private final String title;
         private final LocalDate startDate;
-        private final Set<Professor> advisors;
+        private final List<Professor> advisors;
+        private List<Student> members = new ArrayList<>();
         private Long id;
         private LocalDate endDate;
         private ProjectStatus status = ProjectStatus.ACTIVE;
 
-        public Builder(String title, LocalDate startDate, Set<Professor> advisors) {
+        public Builder(String title, LocalDate startDate, List<Professor> advisors) {
             if (title == null || title.isBlank()) {
                 throw new IllegalArgumentException("O título é obrigatório!");
             }
@@ -199,8 +219,15 @@ public class Project {
             if (advisors.isEmpty()) {
                 throw new IllegalArgumentException("O projeto deve ter pelo menos um professor orientador.");
             }
-            advisors.forEach(Objects::requireNonNull);
-            this.advisors = new HashSet<>(advisors);
+            this.advisors = new ArrayList<>();
+            advisors.forEach(advisor -> addUnique(this.advisors, advisor, "O professor é obrigatório."));
+        }
+
+        public Builder withMembers(List<Student> members) {
+            Objects.requireNonNull(members, "Os participantes são obrigatórios.");
+            this.members = new ArrayList<>();
+            members.forEach(member -> addUnique(this.members, member, "O aluno é obrigatório."));
+            return this;
         }
 
         public Builder withId(Long id) {

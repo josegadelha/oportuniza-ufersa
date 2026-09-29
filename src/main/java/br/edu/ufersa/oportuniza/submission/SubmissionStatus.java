@@ -10,7 +10,7 @@ public enum SubmissionStatus {
     public boolean canTransitionTo(SubmissionStatus nextStatus) {
         return switch (this) {
             case WAITING -> nextStatus == PENDING;
-            case PENDING -> nextStatus == APPROVED || nextStatus == REJECTED;
+            case PENDING -> nextStatus == PENDING || nextStatus == APPROVED || nextStatus == REJECTED;
             case REJECTED -> nextStatus == PENDING; // reenvio permitido
             case APPROVED -> false; // estado terminal
         };

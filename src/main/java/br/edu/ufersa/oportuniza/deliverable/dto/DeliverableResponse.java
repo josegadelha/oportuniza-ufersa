@@ -20,12 +20,4 @@ public record DeliverableResponse(
         @NotNull(message = "O prazo não pode ser nulo na resposta!")
         LocalDate deadline
 ) {
-
-    public static DeliverableResponse fromEntity(Deliverable deliverable) {
-        return new DeliverableResponse(
-                deliverable.getId(),
-                deliverable.getProject().getId(),
-                deliverable.getTitle(),
-                deliverable.getDeadline());
-    }
 }
