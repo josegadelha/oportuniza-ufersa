@@ -6,6 +6,7 @@ import br.edu.ufersa.oportuniza.submission.dto.SubmissionResponse;
 import br.edu.ufersa.oportuniza.submission.dto.SubmissionVersionResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,6 +53,7 @@ public class SubmissionController {
     }
 
     @PostMapping("/deliverables/{deliverableId}/submissions")
+    @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<SubmissionResponse> send(@PathVariable Long deliverableId,
             @RequestBody @Valid SubmissionCreate dto, UriComponentsBuilder uriBuilder,
             @AuthenticationPrincipal AuthenticatedUser principal) {

@@ -6,6 +6,7 @@ import br.edu.ufersa.oportuniza.project.dto.ProjectResponse;
 import br.edu.ufersa.oportuniza.project.dto.ProjectUpdate;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -39,6 +40,7 @@ public class ProjectController {
     }
 
     @PutMapping("/projects/{projectId}")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<ProjectResponse> update(@PathVariable Long projectId,
                                                   @RequestBody @Valid ProjectUpdate dto,
                                                   @AuthenticationPrincipal AuthenticatedUser principal) {
@@ -46,6 +48,7 @@ public class ProjectController {
     }
 
     @PatchMapping("/projects/{projectId}")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<ProjectResponse> patch(@PathVariable Long projectId,
                                                  @RequestBody @Valid ProjectPatch dto,
                                                  @AuthenticationPrincipal AuthenticatedUser principal) {
@@ -53,12 +56,14 @@ public class ProjectController {
     }
 
     @PatchMapping("/projects/{projectId}/complete")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<ProjectResponse> complete(@PathVariable Long projectId,
                                                     @AuthenticationPrincipal AuthenticatedUser principal) {
         return ResponseEntity.ok(service.complete(projectId, principal.getUser()));
     }
 
     @PatchMapping("/projects/{projectId}/cancel")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<ProjectResponse> cancel(@PathVariable Long projectId,
                                                   @AuthenticationPrincipal AuthenticatedUser principal) {
         return ResponseEntity.ok(service.cancel(projectId, principal.getUser()));
