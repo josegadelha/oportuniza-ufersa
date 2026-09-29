@@ -3,7 +3,6 @@ package br.edu.ufersa.oportuniza.proposalinterest;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import br.edu.ufersa.oportuniza.projectproposal.ProjectProposal;
 import br.edu.ufersa.oportuniza.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,15 +17,14 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "proposal_interests")
-public class ProposalInterest {
+class ProposalInterest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "project_proposal_id", nullable = false)
-    private ProjectProposal projectProposal;
+    @Column(name = "project_proposal_id", nullable = false)
+    private Long projectProposalId;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
@@ -44,7 +42,7 @@ public class ProposalInterest {
 
     private ProposalInterest(Builder builder) {
         this.id = builder.id;
-        this.projectProposal = builder.projectProposal;
+        this.projectProposalId = builder.projectProposalId;
         this.user = builder.user;
         this.status = builder.status;
         this.createdAt = builder.createdAt;
@@ -62,8 +60,8 @@ public class ProposalInterest {
         return id;
     }
 
-    public ProjectProposal getProjectProposal() {
-        return projectProposal;
+    public Long getProjectProposalId() {
+        return projectProposalId;
     }
 
     public User getUser() {
@@ -82,15 +80,15 @@ public class ProposalInterest {
 
         private Long id;
 
-        private final ProjectProposal projectProposal;
+        private final Long projectProposalId;
         private final User user;
 
         private InterestStatus status = InterestStatus.PENDING;
         private LocalDateTime createdAt = LocalDateTime.now();
 
-        public Builder(ProjectProposal projectProposal, User user) {
-            this.projectProposal = Objects.requireNonNull(
-                projectProposal,
+        public Builder(Long projectProposalId, User user) {
+            this.projectProposalId = Objects.requireNonNull(
+                projectProposalId,
                 "A proposta de projeto é obrigatória!"
             );
 

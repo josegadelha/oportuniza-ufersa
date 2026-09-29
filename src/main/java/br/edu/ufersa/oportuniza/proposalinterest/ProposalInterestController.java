@@ -1,5 +1,6 @@
 package br.edu.ufersa.oportuniza.proposalinterest;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -26,23 +27,35 @@ import jakarta.validation.Valid;
 @Validated
 public class ProposalInterestController {
 
+    private final ProposalInterestApplicationService service;
+
+    public ProposalInterestController(
+            ProposalInterestApplicationService service
+    ) {
+        this.service = service;
+    }
+
     @GetMapping("/proposal-interests")
     public ResponseEntity<List<ProposalInterestResponse>> list() {
-        return null;
+        return ResponseEntity.ok(service.list());
     }
 
     @GetMapping("/project-proposals/{projectProposalId}/interests")
     public ResponseEntity<List<ProposalInterestResponse>> listByProjectProposal(
             @PathVariable Long projectProposalId
     ) {
-        return null;
+        return ResponseEntity.ok(
+                service.listByProjectProposal(projectProposalId)
+        );
     }
 
     @GetMapping("/proposal-interests/{proposalInterestId}")
     public ResponseEntity<ProposalInterestResponse> findById(
             @PathVariable Long proposalInterestId
     ) {
-        return null;
+        return ResponseEntity.ok(
+                service.findById(proposalInterestId)
+        );
     }
 
     @PostMapping("/project-proposals/{projectProposalId}/interests")
@@ -51,7 +64,18 @@ public class ProposalInterestController {
             @RequestBody @Valid ProposalInterestCreate dto,
             UriComponentsBuilder uriBuilder
     ) {
-        return null;
+        ProposalInterestResponse response =
+                service.createForProjectProposal(
+                        projectProposalId,
+                        dto
+                );
+
+        URI uri = uriBuilder
+                .path("/api/v1/proposal-interests/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(response);
     }
 
     @PutMapping("/proposal-interests/{proposalInterestId}")
@@ -59,7 +83,9 @@ public class ProposalInterestController {
             @PathVariable Long proposalInterestId,
             @RequestBody @Valid ProposalInterestUpdate dto
     ) {
-        return null;
+        return ResponseEntity.ok(
+                service.update(proposalInterestId, dto)
+        );
     }
 
     @PatchMapping("/proposal-interests/{proposalInterestId}")
@@ -67,13 +93,17 @@ public class ProposalInterestController {
             @PathVariable Long proposalInterestId,
             @RequestBody @Valid ProposalInterestPatch dto
     ) {
-        return null;
+        return ResponseEntity.ok(
+                service.partialUpdate(proposalInterestId, dto)
+        );
     }
 
     @DeleteMapping("/proposal-interests/{proposalInterestId}")
     public ResponseEntity<Void> remove(
             @PathVariable Long proposalInterestId
     ) {
-        return null;
+        service.remove(proposalInterestId);
+
+        return ResponseEntity.noContent().build();
     }
 }

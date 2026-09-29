@@ -1,12 +1,11 @@
 package br.edu.ufersa.oportuniza.projectproposal.dto;
 
-import br.edu.ufersa.oportuniza.proposal.ProposalStatus;
-
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDateTime;
 import java.util.List;
+
+import br.edu.ufersa.oportuniza.proposal.ProposalStatus;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record ProjectProposalResponse(
 
@@ -25,7 +24,6 @@ public record ProjectProposalResponse(
         @NotNull(message = "O status não pode ser nulo na resposta!")
         ProposalStatus status,
 
-        @NotNull(message = "A data de publicação não pode ser nula na resposta!")
         LocalDateTime publishedAt,
 
         List<String> desiredSkills

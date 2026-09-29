@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import br.edu.ufersa.oportuniza.proposal.Proposal;
 import br.edu.ufersa.oportuniza.proposal.ProposalStatus;
 import br.edu.ufersa.oportuniza.student.Student;
 import jakarta.persistence.CollectionTable;
@@ -14,13 +13,30 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "project_proposals")
-public class ProjectProposal extends Proposal {
+@SuppressWarnings("unused")
+class ProjectProposal {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 150)
+    private String title;
+
+    @Column(nullable = false, length = 500)
+    private String description;
+
+    @Column(name = "published_at")
+    private LocalDateTime publishedAt;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "student_id", nullable = false)
@@ -42,12 +58,10 @@ public class ProjectProposal extends Proposal {
     }
 
     private ProjectProposal(Builder builder) {
-        super(
-            builder.id,
-            builder.title,
-            builder.description,
-            builder.publishedAt
-        );
+        this.id = builder.id;
+        this.title = requireText(builder.title, "O título é obrigatório!");
+        this.description = requireText(builder.description, "A descrição é obrigatória!");
+        this.publishedAt = builder.publishedAt;
 
         this.student = builder.student;
         this.status = builder.status;
@@ -65,20 +79,38 @@ public class ProjectProposal extends Proposal {
         return student;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     public ProposalStatus getStatus() {
         return status;
     }
 
-    @Override
     public LocalDateTime getPublishedAt() {
-        return super.getPublishedAt();
+        return publishedAt;
+    }
+
+    private static String requireText(String value, String message) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(message);
+        }
+        return value;
     }
 
     public List<String> getDesiredSkills() {
         return List.copyOf(desiredSkills);
     }
 
-    public static class Builder {
+    static class Builder {
 
         private Long id;
 
@@ -87,7 +119,7 @@ public class ProjectProposal extends Proposal {
         private final String description;
 
         private ProposalStatus status = ProposalStatus.OPEN;
-        private LocalDateTime publishedAt = LocalDateTime.now();
+        private LocalDateTime publishedAt;
         private List<String> desiredSkills = new ArrayList<>();
 
         public Builder(
@@ -119,11 +151,7 @@ public class ProjectProposal extends Proposal {
         }
 
         public Builder withPublishedAt(LocalDateTime publishedAt) {
-            this.publishedAt = Objects.requireNonNull(
-                publishedAt,
-                "A data de publicação é obrigatória!"
-            );
-
+            this.publishedAt = publishedAt;
             return this;
         }
 
@@ -137,11 +165,6 @@ public class ProjectProposal extends Proposal {
         }
 
         public ProjectProposal build() {
-            Objects.requireNonNull(
-                publishedAt,
-                "A data de publicação é obrigatória!"
-            );
-
             return new ProjectProposal(this);
         }
     }
