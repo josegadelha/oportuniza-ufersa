@@ -1,7 +1,8 @@
 package br.edu.ufersa.oportuniza.proposalinterest;
 
+import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
+
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 import br.edu.ufersa.oportuniza.projectproposal.ProjectProposal;
 import br.edu.ufersa.oportuniza.user.User;
@@ -89,12 +90,12 @@ public class ProposalInterest {
         private LocalDateTime createdAt = LocalDateTime.now();
 
         public Builder(ProjectProposal projectProposal, User user) {
-            this.projectProposal = Objects.requireNonNull(
+            this.projectProposal = BusinessValidation.requireNonNull(
                 projectProposal,
                 "A proposta de projeto é obrigatória!"
             );
 
-            this.user = Objects.requireNonNull(
+            this.user = BusinessValidation.requireNonNull(
                 user,
                 "O usuário interessado é obrigatório!"
             );
@@ -106,7 +107,7 @@ public class ProposalInterest {
         }
 
         public Builder withStatus(InterestStatus status) {
-            this.status = Objects.requireNonNull(
+            this.status = BusinessValidation.requireNonNull(
                 status,
                 "O status do interesse é obrigatório!"
             );
@@ -115,7 +116,7 @@ public class ProposalInterest {
         }
 
         public Builder withCreatedAt(LocalDateTime createdAt) {
-            this.createdAt = Objects.requireNonNull(
+            this.createdAt = BusinessValidation.requireNonNull(
                 createdAt,
                 "A data de criação é obrigatória!"
             );

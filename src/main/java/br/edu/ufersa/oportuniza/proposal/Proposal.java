@@ -1,4 +1,6 @@
 package br.edu.ufersa.oportuniza.proposal;
+
+import br.edu.ufersa.oportuniza.shared.exception.InvalidBusinessDataException;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -48,7 +50,7 @@ public abstract class Proposal {
 
     private static String requireText(String value, String message) {
         if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException(message);
+            throw new InvalidBusinessDataException(message);
         }
 
         return value;

@@ -1,5 +1,8 @@
 package br.edu.ufersa.oportuniza.user;
 
+import br.edu.ufersa.oportuniza.shared.exception.InvalidBusinessDataException;
+import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
+
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -11,7 +14,6 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 
-import java.util.Objects;
 
 @Entity
 @Table(name = "tb_users")
@@ -82,13 +84,13 @@ public abstract class User {
             String description
     ) {
         if (username == null || username.isBlank()) {
-            throw new IllegalArgumentException(
+            throw new InvalidBusinessDataException(
                     "O nome de usuário é obrigatório!"
             );
         }
 
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException(
+            throw new InvalidBusinessDataException(
                     "O nome é obrigatório!"
             );
         }
@@ -97,19 +99,19 @@ public abstract class User {
 
         this.username = username;
 
-        this.registration = Objects.requireNonNull(
+        this.registration = BusinessValidation.requireNonNull(
                 registration,
                 "O registro é obrigatório!"
         );
 
         this.name = name;
 
-        this.email = Objects.requireNonNull(
+        this.email = BusinessValidation.requireNonNull(
                 email,
                 "O email é obrigatório!"
         );
 
-        this.password = Objects.requireNonNull(
+        this.password = BusinessValidation.requireNonNull(
                 password,
                 "A senha é obrigatória!"
         );
@@ -121,14 +123,14 @@ public abstract class User {
 
 
     public void changeEmail(Email newEmail) {
-        this.email = Objects.requireNonNull(
+        this.email = BusinessValidation.requireNonNull(
                 newEmail,
                 "O novo email é obrigatório!"
         );
     }
 
     public void changePassword(Password newPassword) {
-        this.password = Objects.requireNonNull(
+        this.password = BusinessValidation.requireNonNull(
                 newPassword,
                 "A nova senha é obrigatória!"
         );

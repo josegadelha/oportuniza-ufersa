@@ -1,11 +1,13 @@
 package br.edu.ufersa.oportuniza.notification;
 
+import br.edu.ufersa.oportuniza.shared.exception.InvalidBusinessDataException;
+import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
+
 import br.edu.ufersa.oportuniza.user.User;
 
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Entity
 @Table(name = "notifications")
@@ -114,16 +116,16 @@ public class Notification {
         private LocalDate sentAt = LocalDate.now();
 
         public Builder(User recipient, String title, String message, NotificationType type) {
-            this.recipient = Objects.requireNonNull(recipient, "O destinatário é obrigatório!");
+            this.recipient = BusinessValidation.requireNonNull(recipient, "O destinatário é obrigatório!");
             if (title == null || title.isBlank()) {
-                throw new IllegalArgumentException("O título é obrigatório!");
+                throw new InvalidBusinessDataException("O título é obrigatório!");
             }
             if (message == null || message.isBlank()) {
-                throw new IllegalArgumentException("A mensagem é obrigatória!");
+                throw new InvalidBusinessDataException("A mensagem é obrigatória!");
             }
             this.title = title;
             this.message = message;
-            this.type = Objects.requireNonNull(type, "O tipo da notificação é obrigatório!");
+            this.type = BusinessValidation.requireNonNull(type, "O tipo da notificação é obrigatório!");
         }
 
         public Builder withId(Long id) {
@@ -137,7 +139,7 @@ public class Notification {
         }
 
         public Builder withSentAt(LocalDate sentAt) {
-            this.sentAt = Objects.requireNonNull(sentAt, "A data de envio é obrigatória.");
+            this.sentAt = BusinessValidation.requireNonNull(sentAt, "A data de envio é obrigatória.");
             return this;
         }
 
@@ -148,7 +150,7 @@ public class Notification {
 
         private void validateInvariants() {
             if (sentAt != null && sentAt.isAfter(LocalDate.now())) {
-                throw new IllegalArgumentException("A data de envio não pode ser futura.");
+                throw new InvalidBusinessDataException("A data de envio não pode ser futura.");
             }
         }
     }

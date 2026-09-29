@@ -1,9 +1,10 @@
 package br.edu.ufersa.oportuniza.projectproposal;
 
+import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import br.edu.ufersa.oportuniza.proposal.Proposal;
 import br.edu.ufersa.oportuniza.proposal.ProposalStatus;
@@ -55,7 +56,7 @@ public class ProjectProposal extends Proposal {
     }
 
     public void updateStatus(ProposalStatus status) {
-        this.status = Objects.requireNonNull(
+        this.status = BusinessValidation.requireNonNull(
             status,
             "O status da proposta é obrigatório!"
         );
@@ -95,7 +96,7 @@ public class ProjectProposal extends Proposal {
             String title,
             String description
         ) {
-            this.student = Objects.requireNonNull(
+            this.student = BusinessValidation.requireNonNull(
                 student,
                 "O estudante é obrigatório!"
             );
@@ -110,7 +111,7 @@ public class ProjectProposal extends Proposal {
         }
 
         public Builder withStatus(ProposalStatus status) {
-            this.status = Objects.requireNonNull(
+            this.status = BusinessValidation.requireNonNull(
                 status,
                 "O status da proposta é obrigatório!"
             );
@@ -119,7 +120,7 @@ public class ProjectProposal extends Proposal {
         }
 
         public Builder withPublishedAt(LocalDateTime publishedAt) {
-            this.publishedAt = Objects.requireNonNull(
+            this.publishedAt = BusinessValidation.requireNonNull(
                 publishedAt,
                 "A data de publicação é obrigatória!"
             );
@@ -137,7 +138,7 @@ public class ProjectProposal extends Proposal {
         }
 
         public ProjectProposal build() {
-            Objects.requireNonNull(
+            BusinessValidation.requireNonNull(
                 publishedAt,
                 "A data de publicação é obrigatória!"
             );

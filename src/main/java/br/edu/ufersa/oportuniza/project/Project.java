@@ -1,5 +1,8 @@
 package br.edu.ufersa.oportuniza.project;
 
+import br.edu.ufersa.oportuniza.shared.exception.InvalidBusinessDataException;
+import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
+
 import br.edu.ufersa.oportuniza.professor.Professor;
 import br.edu.ufersa.oportuniza.shared.exception.ProjectRuleViolationException;
 import br.edu.ufersa.oportuniza.student.Student;
@@ -10,7 +13,6 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "projects")
@@ -78,7 +80,7 @@ public class Project {
             throw new ProjectRuleViolationException("Não é permitido renomear projetos que não estão ativos.");
         }
         if (newTitle == null || newTitle.isBlank()) {
-            throw new IllegalArgumentException("O título não pode ser vazio.");
+            throw new InvalidBusinessDataException("O título não pode ser vazio.");
         }
         this.title = newTitle;
     }
@@ -87,15 +89,15 @@ public class Project {
         if (this.status != ProjectStatus.ACTIVE) {
             throw new ProjectRuleViolationException("Não é possível alterar a data de encerramento de projetos que não estão ativos.");
         }
-        Objects.requireNonNull(newEndDate, "A nova data de encerramento é obrigatória.");
+        BusinessValidation.requireNonNull(newEndDate, "A nova data de encerramento é obrigatória.");
         if (newEndDate.isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("A data de encerramento não pode estar no passado.");
+            throw new InvalidBusinessDataException("A data de encerramento não pode estar no passado.");
         }
         if (newEndDate.isBefore(this.startDate)) {
-            throw new IllegalArgumentException("A data de encerramento não pode ser anterior à data de início.");
+            throw new InvalidBusinessDataException("A data de encerramento não pode ser anterior à data de início.");
         }
         if (this.endDate != null && newEndDate.isBefore(this.endDate)) {
-            throw new IllegalArgumentException("A nova data de encerramento não pode antecipar o prazo já vigente.");
+            throw new ProjectRuleViolationException("A nova data de encerramento não pode antecipar o prazo já vigente.");
         }
         this.endDate = newEndDate;
     }
@@ -108,7 +110,7 @@ public class Project {
     }
 
     public void removeAdvisor(Professor professor) {
-        Objects.requireNonNull(professor, "O professor é obrigatório.");
+        BusinessValidation.requireNonNull(professor, "O professor é obrigatório.");
         boolean isAdvisor = this.advisors.stream().anyMatch(advisor -> sameUser(advisor, professor));
         if (this.advisors.size() <= 1 && isAdvisor) {
             throw new ProjectRuleViolationException("O projeto deve manter pelo menos um professor orientador.");
@@ -124,12 +126,12 @@ public class Project {
     }
 
     public void removeMember(Student student) {
-        Objects.requireNonNull(student, "O aluno é obrigatório.");
+        BusinessValidation.requireNonNull(student, "O aluno é obrigatório.");
         this.members.removeIf(member -> sameUser(member, student));
     }
 
     private static <T extends User> void addUnique(List<T> users, T user, String message) {
-        Objects.requireNonNull(user, message);
+        BusinessValidation.requireNonNull(user, message);
         if (users.stream().noneMatch(existing -> sameUser(existing, user))) {
             users.add(user);
         }
@@ -211,20 +213,20 @@ public class Project {
 
         public Builder(String title, LocalDate startDate, List<Professor> advisors) {
             if (title == null || title.isBlank()) {
-                throw new IllegalArgumentException("O título é obrigatório!");
+                throw new InvalidBusinessDataException("O título é obrigatório!");
             }
             this.title = title;
-            this.startDate = Objects.requireNonNull(startDate, "A data de início é obrigatória!");
-            Objects.requireNonNull(advisors, "É obrigatório informar pelo menos um professor orientador!");
+            this.startDate = BusinessValidation.requireNonNull(startDate, "A data de início é obrigatória!");
+            BusinessValidation.requireNonNull(advisors, "É obrigatório informar pelo menos um professor orientador!");
             if (advisors.isEmpty()) {
-                throw new IllegalArgumentException("O projeto deve ter pelo menos um professor orientador.");
+                throw new InvalidBusinessDataException("O projeto deve ter pelo menos um professor orientador.");
             }
             this.advisors = new ArrayList<>();
             advisors.forEach(advisor -> addUnique(this.advisors, advisor, "O professor é obrigatório."));
         }
 
         public Builder withMembers(List<Student> members) {
-            Objects.requireNonNull(members, "Os participantes são obrigatórios.");
+            BusinessValidation.requireNonNull(members, "Os participantes são obrigatórios.");
             this.members = new ArrayList<>();
             members.forEach(member -> addUnique(this.members, member, "O aluno é obrigatório."));
             return this;
@@ -252,7 +254,7 @@ public class Project {
 
         private void validateInvariants() {
             if (endDate != null && endDate.isBefore(startDate)) {
-                throw new IllegalArgumentException("A data de encerramento não pode ser anterior à data de início.");
+                throw new InvalidBusinessDataException("A data de encerramento não pode ser anterior à data de início.");
             }
         }
     }

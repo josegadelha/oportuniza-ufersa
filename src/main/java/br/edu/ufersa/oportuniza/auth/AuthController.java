@@ -2,9 +2,7 @@ package br.edu.ufersa.oportuniza.auth;
 
 import br.edu.ufersa.oportuniza.auth.dto.AuthDTOs;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,20 +22,7 @@ public class AuthController {
     public ResponseEntity<AuthDTOs.TokenResponseDTO> login(
             @RequestBody @Valid AuthDTOs.LoginRequestDTO dto
     ) {
-        try {
-            String token = authService.login(
-                    dto.username(),
-                    dto.password()
-            );
-
-            return ResponseEntity.ok(
-                    new AuthDTOs.TokenResponseDTO(token)
-            );
-
-        } catch (AuthenticationException e) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .build();
-        }
+        String token = authService.login(dto.username(), dto.password());
+        return ResponseEntity.ok(new AuthDTOs.TokenResponseDTO(token));
     }
 }
