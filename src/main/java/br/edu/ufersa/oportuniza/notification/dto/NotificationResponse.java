@@ -1,0 +1,32 @@
+package br.edu.ufersa.oportuniza.notification.dto;
+
+import br.edu.ufersa.oportuniza.notification.NotificationType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDate;
+
+public record NotificationResponse(
+
+        @NotNull(message = "O id não pode ser nulo na resposta!")
+        Long id,
+
+        @NotNull(message = "O destinatário não pode ser nulo na resposta!")
+        Long recipientId,
+
+        @NotBlank(message = "O título não pode ser vazio na resposta!")
+        String title,
+
+        @NotBlank(message = "A mensagem não pode ser vazia na resposta!")
+        String message,
+
+        @NotNull(message = "O tipo não pode ser nulo na resposta!")
+        NotificationType type,
+
+        @NotNull(message = "O status de leitura não pode ser nulo na resposta!")
+        Boolean isRead,
+
+        @NotNull(message = "A data de envio não pode ser nula na resposta!")
+        LocalDate sentAt
+) {
+}
