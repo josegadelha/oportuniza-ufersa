@@ -15,7 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "projects")
+@Table(
+    name = "projects",
+    uniqueConstraints = @UniqueConstraint(
+        columnNames = {"title", "start_date"}
+    )
+)
 public class Project {
 
     @Id
