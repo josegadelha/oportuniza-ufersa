@@ -1,14 +1,13 @@
 package br.edu.ufersa.oportuniza.opportunity;
 
-import br.edu.ufersa.oportuniza.shared.exception.InvalidBusinessDataException;
-import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.ufersa.oportuniza.professor.Professor;
+import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
+import br.edu.ufersa.oportuniza.shared.exception.InvalidBusinessDataException;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -21,9 +20,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "opportunities")
+@Table(
+    name = "opportunities",
+    uniqueConstraints = @UniqueConstraint(
+        columnNames = {"professor_id", "title"}
+    )
+)
 class Opportunity {
 
     @Id
