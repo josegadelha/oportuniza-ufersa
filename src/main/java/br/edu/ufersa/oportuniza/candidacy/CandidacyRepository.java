@@ -4,5 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CandidacyRepository extends JpaRepository<Candidacy, Long> {
+interface CandidacyRepository extends JpaRepository<Candidacy, Long> {
+
+    java.util.List<Candidacy> findByOpportunityId(Long opportunityId);
+
+    java.util.List<Candidacy> findByStudentId(Long studentId);
+
+    java.util.Optional<Candidacy> findByStudentIdAndOpportunityId(Long studentId, Long opportunityId);
 }

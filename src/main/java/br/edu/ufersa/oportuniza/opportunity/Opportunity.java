@@ -7,20 +7,35 @@ import java.util.List;
 import java.util.Objects;
 
 import br.edu.ufersa.oportuniza.professor.Professor;
-import br.edu.ufersa.oportuniza.proposal.Proposal;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "opportunities")
-public class Opportunity extends Proposal {
+class Opportunity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 150)
+    private String title;
+
+    @Column(nullable = false, length = 500)
+    private String description;
+
+    @Column(name = "published_at")
+    private LocalDateTime publishedAt;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "professor_id", nullable = false)
@@ -58,12 +73,10 @@ public class Opportunity extends Proposal {
     }
 
     private Opportunity(Builder builder) {
-        super(
-            builder.id,
-            builder.title,
-            builder.description,
-            builder.publishedAt
-        );
+        this.id = builder.id;
+        this.title = requireText(builder.title, "O título é obrigatório!");
+        this.description = requireText(builder.description, "A descrição é obrigatória!");
+        this.publishedAt = builder.publishedAt;
 
         this.professor = builder.professor;
         this.type = builder.type;
@@ -125,6 +138,29 @@ public class Opportunity extends Proposal {
 
     public List<String> getRequirements() {
         return List.copyOf(requirements);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public LocalDateTime getPublishedAt() {
+        return publishedAt;
+    }
+
+    private static String requireText(String value, String message) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(message);
+        }
+        return value;
     }
 
     public static class Builder {

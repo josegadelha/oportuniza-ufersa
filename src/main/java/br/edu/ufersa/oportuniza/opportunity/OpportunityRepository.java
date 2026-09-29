@@ -4,5 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OpportunityRepository extends JpaRepository<Opportunity, Long> {
+interface OpportunityRepository extends JpaRepository<Opportunity, Long> {
+
+    java.util.List<Opportunity> findByProfessorId(Long professorId);
 }

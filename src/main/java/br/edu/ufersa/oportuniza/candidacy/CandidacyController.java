@@ -1,8 +1,11 @@
 package br.edu.ufersa.oportuniza.candidacy;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.edu.ufersa.oportuniza.auth.AuthenticatedUser;
 import br.edu.ufersa.oportuniza.candidacy.dto.CandidacyCreate;
 import br.edu.ufersa.oportuniza.candidacy.dto.CandidacyPatch;
 import br.edu.ufersa.oportuniza.candidacy.dto.CandidacyResponse;
@@ -26,30 +30,37 @@ import jakarta.validation.Valid;
 @Validated
 public class CandidacyController {
 
+    private final CandidacyApplicationService service;
+
+    public CandidacyController(CandidacyApplicationService service) {
+        this.service = service;
+    }
+
     @GetMapping("/candidacies")
     public ResponseEntity<List<CandidacyResponse>> list() {
-        return null;
+        return ResponseEntity.ok(service.list());
     }
 
     @GetMapping("/opportunities/{opportunityId}/candidacies")
     public ResponseEntity<List<CandidacyResponse>> listByOpportunity(
             @PathVariable Long opportunityId
     ) {
-        return null;
+        return ResponseEntity.ok(service.listByOpportunity(opportunityId));
     }
 
-    @GetMapping("/students/{studentId}/candidacies")
+    @GetMapping("/students/candidacies")
+    @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<List<CandidacyResponse>> listByStudent(
-            @PathVariable Long studentId
+            @AuthenticationPrincipal AuthenticatedUser principal
     ) {
-        return null;
+        return ResponseEntity.ok(service.listByStudent(principal.getUser().getId()));
     }
 
     @GetMapping("/candidacies/{candidacyId}")
     public ResponseEntity<CandidacyResponse> findById(
             @PathVariable Long candidacyId
     ) {
-        return null;
+        return ResponseEntity.ok(service.findById(candidacyId));
     }
 
     @PostMapping("/opportunities/{opportunityId}/candidacies")
@@ -58,7 +69,13 @@ public class CandidacyController {
             @RequestBody @Valid CandidacyCreate dto,
             UriComponentsBuilder uriBuilder
     ) {
-        return null;
+        CandidacyResponse response = service.createForOpportunity(opportunityId, dto);
+
+        URI uri = uriBuilder.path("/api/v1/candidacies/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(response);
     }
 
     @PutMapping("/candidacies/{candidacyId}")
@@ -66,7 +83,7 @@ public class CandidacyController {
             @PathVariable Long candidacyId,
             @RequestBody @Valid CandidacyUpdate dto
     ) {
-        return null;
+        return ResponseEntity.ok(service.update(candidacyId, dto));
     }
 
     @PatchMapping("/candidacies/{candidacyId}")
@@ -74,13 +91,14 @@ public class CandidacyController {
             @PathVariable Long candidacyId,
             @RequestBody @Valid CandidacyPatch dto
     ) {
-        return null;
+        return ResponseEntity.ok(service.partialUpdate(candidacyId, dto));
     }
 
     @DeleteMapping("/candidacies/{candidacyId}")
     public ResponseEntity<Void> remove(
             @PathVariable Long candidacyId
     ) {
-        return null;
+        service.remove(candidacyId);
+        return ResponseEntity.noContent().build();
     }
 }

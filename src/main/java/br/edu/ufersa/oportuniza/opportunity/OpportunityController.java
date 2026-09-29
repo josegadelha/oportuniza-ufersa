@@ -1,8 +1,11 @@
 package br.edu.ufersa.oportuniza.opportunity;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.edu.ufersa.oportuniza.auth.AuthenticatedUser;
 import br.edu.ufersa.oportuniza.opportunity.dto.OpportunityCreate;
 import br.edu.ufersa.oportuniza.opportunity.dto.OpportunityPatch;
 import br.edu.ufersa.oportuniza.opportunity.dto.OpportunityResponse;
@@ -26,32 +30,57 @@ import jakarta.validation.Valid;
 @Validated
 public class OpportunityController {
 
-    @GetMapping("/opportunities")
-    public ResponseEntity<List<OpportunityResponse>> list() {
-        return null;
+    private final OpportunityApplicationService service;
+
+    public OpportunityController(OpportunityApplicationService service) {
+        this.service = service;
     }
 
-    @GetMapping("/professors/{professorId}/opportunities")
+    @GetMapping("/opportunities")
+    public ResponseEntity<List<OpportunityResponse>> list() {
+        return ResponseEntity.ok(service.list());
+    }
+
+    @GetMapping("/professors/opportunities")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<List<OpportunityResponse>> listByProfessor(
-            @PathVariable Long professorId
+            @AuthenticationPrincipal AuthenticatedUser principal
     ) {
-        return null;
+        return ResponseEntity.ok(
+                service.listByProfessor(
+                        principal.getUser().getId()
+                )
+        );
     }
 
     @GetMapping("/opportunities/{opportunityId}")
     public ResponseEntity<OpportunityResponse> findById(
             @PathVariable Long opportunityId
     ) {
-        return null;
+        return ResponseEntity.ok(
+                service.findById(opportunityId)
+        );
     }
 
-        @PostMapping("/professors/{professorId}/opportunities")
-        public ResponseEntity<OpportunityResponse> createForProfessor(
-            @PathVariable Long professorId,
+    @PostMapping("/professors/opportunities")
+    @PreAuthorize("hasRole('PROFESSOR')")
+    public ResponseEntity<OpportunityResponse> createForProfessor(
+            @AuthenticationPrincipal AuthenticatedUser principal,
             @RequestBody @Valid OpportunityCreate dto,
             UriComponentsBuilder uriBuilder
     ) {
-        return null;
+        OpportunityResponse response =
+                service.createForProfessor(
+                        principal.getUser().getId(),
+                        dto
+                );
+
+        URI uri = uriBuilder
+                .path("/api/v1/opportunities/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(response);
     }
 
     @PutMapping("/opportunities/{opportunityId}")
@@ -59,7 +88,9 @@ public class OpportunityController {
             @PathVariable Long opportunityId,
             @RequestBody @Valid OpportunityUpdate dto
     ) {
-        return null;
+        return ResponseEntity.ok(
+                service.update(opportunityId, dto)
+        );
     }
 
     @PatchMapping("/opportunities/{opportunityId}")
@@ -67,13 +98,16 @@ public class OpportunityController {
             @PathVariable Long opportunityId,
             @RequestBody @Valid OpportunityPatch dto
     ) {
-        return null;
+        return ResponseEntity.ok(
+                service.partialUpdate(opportunityId, dto)
+        );
     }
 
     @DeleteMapping("/opportunities/{opportunityId}")
     public ResponseEntity<Void> remove(
             @PathVariable Long opportunityId
     ) {
-        return null;
+        service.remove(opportunityId);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -3,7 +3,6 @@ package br.edu.ufersa.oportuniza.candidacy;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import br.edu.ufersa.oportuniza.opportunity.Opportunity;
 import br.edu.ufersa.oportuniza.student.Student;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,10 +14,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "candidacies")
-public class Candidacy {
+@Table(
+        name = "candidacies",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"student_id", "opportunity_id"})
+)
+class Candidacy {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +31,8 @@ public class Candidacy {
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "opportunity_id", nullable = false)
-    private Opportunity opportunity;
+    @Column(name = "opportunity_id", nullable = false)
+    private Long opportunityId;
 
     @Column(name = "applied_at", nullable = false)
     private LocalDateTime appliedAt;
@@ -45,16 +47,44 @@ public class Candidacy {
     private Candidacy(Builder builder) {
         this.id = builder.id;
         this.student = builder.student;
-        this.opportunity = builder.opportunity;
+        this.opportunityId = builder.opportunityId;
         this.appliedAt = builder.appliedAt;
         this.status = builder.status;
     }
 
-    public void updateStatus(CandidacyStatus status) {
-        this.status = Objects.requireNonNull(
-            status,
-            "O status da candidatura é obrigatório!"
+    public void updateStatus(CandidacyStatus nextStatus) {
+        CandidacyStatus status = Objects.requireNonNull(
+                nextStatus,
+                "O status da candidatura é obrigatório!"
         );
+
+        if (!isValidTransition(this.status, status)) {
+            throw new IllegalArgumentException("Transição de status inválida para a candidatura.");
+        }
+
+        this.status = status;
+    }
+
+    private static boolean isValidTransition(CandidacyStatus current, CandidacyStatus next) {
+        if (current == null) {
+            return true;
+        }
+
+        return switch (current) {
+            case IN_SELECTION -> next == CandidacyStatus.HISTORY_REVIEW
+                    || next == CandidacyStatus.REJECTED
+                    || next == CandidacyStatus.WITHDRAWN;
+            case HISTORY_REVIEW -> next == CandidacyStatus.INTERVIEW
+                    || next == CandidacyStatus.REJECTED
+                    || next == CandidacyStatus.WITHDRAWN;
+            case INTERVIEW -> next == CandidacyStatus.FINAL_REVIEW
+                    || next == CandidacyStatus.REJECTED
+                    || next == CandidacyStatus.WITHDRAWN;
+            case FINAL_REVIEW -> next == CandidacyStatus.APPROVED
+                    || next == CandidacyStatus.REJECTED
+                    || next == CandidacyStatus.WITHDRAWN;
+            case APPROVED, REJECTED, WITHDRAWN -> false;
+        };
     }
 
     public Long getId() {
@@ -65,8 +95,8 @@ public class Candidacy {
         return student;
     }
 
-    public Opportunity getOpportunity() {
-        return opportunity;
+    public Long getOpportunityId() {
+        return opportunityId;
     }
 
     public LocalDateTime getAppliedAt() {
@@ -77,24 +107,24 @@ public class Candidacy {
         return status;
     }
 
-    public static class Builder {
+    static class Builder {
 
         private Long id;
 
         private final Student student;
-        private final Opportunity opportunity;
+        private final Long opportunityId;
 
         private LocalDateTime appliedAt = LocalDateTime.now();
         private CandidacyStatus status = CandidacyStatus.IN_SELECTION;
 
-        public Builder(Student student, Opportunity opportunity) {
+        public Builder(Student student, Long opportunityId) {
             this.student = Objects.requireNonNull(
                 student,
                 "O estudante é obrigatório!"
             );
 
-            this.opportunity = Objects.requireNonNull(
-                opportunity,
+            this.opportunityId = Objects.requireNonNull(
+                opportunityId,
                 "A oportunidade é obrigatória!"
             );
         }
