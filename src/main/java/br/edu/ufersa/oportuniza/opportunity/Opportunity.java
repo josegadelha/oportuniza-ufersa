@@ -1,10 +1,12 @@
 package br.edu.ufersa.oportuniza.opportunity;
 
+import br.edu.ufersa.oportuniza.shared.exception.InvalidBusinessDataException;
+import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import br.edu.ufersa.oportuniza.professor.Professor;
 import br.edu.ufersa.oportuniza.proposal.Proposal;
@@ -150,10 +152,10 @@ public class Opportunity extends Proposal {
                 String description,
                 OpportunityType type
         ) {
-            this.professor = Objects.requireNonNull(professor, "O professor é obrigatório!");
+            this.professor = BusinessValidation.requireNonNull(professor, "O professor é obrigatório!");
             this.title = title;
             this.description = description;
-            this.type = Objects.requireNonNull(type, "O tipo da oportunidade é obrigatório!");
+            this.type = BusinessValidation.requireNonNull(type, "O tipo da oportunidade é obrigatório!");
         }
 
         public Builder withId(Long id) {
@@ -180,7 +182,7 @@ public class Opportunity extends Proposal {
         }
 
         public Builder withStatus(OpportunityStatus status) {
-            this.status = Objects.requireNonNull(status, "O status é obrigatório!");
+            this.status = BusinessValidation.requireNonNull(status, "O status é obrigatório!");
             return this;
         }
 
@@ -214,19 +216,19 @@ public class Opportunity extends Proposal {
 
         private static void validatePositions(Integer positions) {
             if (positions == null || positions < 1) {
-                throw new IllegalArgumentException("A quantidade de vagas deve ser maior que zero!");
+                throw new InvalidBusinessDataException("A quantidade de vagas deve ser maior que zero!");
             }
         }
 
         private static void validateWorkloadHours(Integer workloadHours) {
             if (workloadHours == null || workloadHours < 0) {
-                throw new IllegalArgumentException("A carga horária não pode ser negativa!");
+                throw new InvalidBusinessDataException("A carga horária não pode ser negativa!");
             }
         }
 
         private static void validateRemuneration(Double remuneration) {
             if (remuneration == null || remuneration < 0.0) {
-                throw new IllegalArgumentException("A remuneração não pode ser negativa!");
+                throw new InvalidBusinessDataException("A remuneração não pode ser negativa!");
             }
         }
     }

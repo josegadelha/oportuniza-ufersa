@@ -1,5 +1,8 @@
 package br.edu.ufersa.oportuniza.deliverable;
 
+import br.edu.ufersa.oportuniza.shared.exception.InvalidBusinessDataException;
+import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
+
 import br.edu.ufersa.oportuniza.project.Project;
 import br.edu.ufersa.oportuniza.project.ProjectStatus;
 import br.edu.ufersa.oportuniza.shared.exception.DeliverableRuleViolationException;
@@ -7,7 +10,6 @@ import br.edu.ufersa.oportuniza.shared.exception.DeliverableRuleViolationExcepti
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Entity
 @Table(name = "deliverables")
@@ -40,19 +42,19 @@ public class Deliverable {
     public void renameTitle(String newTitle) {
         ensureProjectIsActive();
         if (newTitle == null || newTitle.isBlank()) {
-            throw new IllegalArgumentException("O título não pode ser vazio.");
+            throw new InvalidBusinessDataException("O título não pode ser vazio.");
         }
         this.title = newTitle;
     }
 
     public void postponeDeadline(LocalDate newDeadline) {
         ensureProjectIsActive();
-        Objects.requireNonNull(newDeadline, "O novo prazo é obrigatório.");
+        BusinessValidation.requireNonNull(newDeadline, "O novo prazo é obrigatório.");
         if (newDeadline.isBefore(LocalDate.now()) || newDeadline.isBefore(project.getStartDate())) {
-            throw new IllegalArgumentException("O prazo não pode estar no passado ou antes do início do projeto.");
+            throw new InvalidBusinessDataException("O prazo não pode estar no passado ou antes do início do projeto.");
         }
         if (this.deadline != null && newDeadline.isBefore(this.deadline)) {
-            throw new IllegalArgumentException("O novo prazo não pode antecipar o prazo já vigente.");
+            throw new DeliverableRuleViolationException("O novo prazo não pode antecipar o prazo já vigente.");
         }
         this.deadline = newDeadline;
     }
@@ -101,9 +103,9 @@ public class Deliverable {
         private LocalDate deadline;
 
         public Builder(Project project, String title) {
-            this.project = Objects.requireNonNull(project, "O projeto é obrigatório!");
+            this.project = BusinessValidation.requireNonNull(project, "O projeto é obrigatório!");
             if (title == null || title.isBlank()) {
-                throw new IllegalArgumentException("O título é obrigatório!");
+                throw new InvalidBusinessDataException("O título é obrigatório!");
             }
             this.title = title;
         }
@@ -128,7 +130,7 @@ public class Deliverable {
                 throw new DeliverableRuleViolationException("Entregas só podem ser criadas para projetos ativos.");
             }
             if (deadline == null || deadline.isBefore(LocalDate.now()) || deadline.isBefore(project.getStartDate())) {
-                throw new IllegalArgumentException("O prazo é obrigatório e não pode estar no passado ou antes do início do projeto.");
+                throw new InvalidBusinessDataException("O prazo é obrigatório e não pode estar no passado ou antes do início do projeto.");
             }
         }
     }

@@ -1,7 +1,8 @@
 package br.edu.ufersa.oportuniza.candidacy;
 
+import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
+
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 import br.edu.ufersa.oportuniza.opportunity.Opportunity;
 import br.edu.ufersa.oportuniza.student.Student;
@@ -51,7 +52,7 @@ public class Candidacy {
     }
 
     public void updateStatus(CandidacyStatus status) {
-        this.status = Objects.requireNonNull(
+        this.status = BusinessValidation.requireNonNull(
             status,
             "O status da candidatura é obrigatório!"
         );
@@ -88,12 +89,12 @@ public class Candidacy {
         private CandidacyStatus status = CandidacyStatus.IN_SELECTION;
 
         public Builder(Student student, Opportunity opportunity) {
-            this.student = Objects.requireNonNull(
+            this.student = BusinessValidation.requireNonNull(
                 student,
                 "O estudante é obrigatório!"
             );
 
-            this.opportunity = Objects.requireNonNull(
+            this.opportunity = BusinessValidation.requireNonNull(
                 opportunity,
                 "A oportunidade é obrigatória!"
             );
@@ -105,7 +106,7 @@ public class Candidacy {
         }
 
         public Builder withAppliedAt(LocalDateTime appliedAt) {
-            this.appliedAt = Objects.requireNonNull(
+            this.appliedAt = BusinessValidation.requireNonNull(
                 appliedAt,
                 "A data da candidatura é obrigatória!"
             );
@@ -114,7 +115,7 @@ public class Candidacy {
         }
 
         public Builder withStatus(CandidacyStatus status) {
-            this.status = Objects.requireNonNull(
+            this.status = BusinessValidation.requireNonNull(
                 status,
                 "O status da candidatura é obrigatório!"
             );

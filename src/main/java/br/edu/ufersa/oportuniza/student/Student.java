@@ -1,5 +1,8 @@
 package br.edu.ufersa.oportuniza.student;
 
+import br.edu.ufersa.oportuniza.shared.exception.InvalidBusinessDataException;
+import br.edu.ufersa.oportuniza.shared.exception.BusinessValidation;
+
 import br.edu.ufersa.oportuniza.user.Email;
 import br.edu.ufersa.oportuniza.user.Password;
 import br.edu.ufersa.oportuniza.user.Registration;
@@ -11,7 +14,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 
-import java.util.Objects;
 
 @Entity
 @Table(name = "tb_students")
@@ -60,7 +62,7 @@ public class Student extends User {
             Integer newCurrentPeriod,
             Double newIra
     ) {
-        Objects.requireNonNull(
+        BusinessValidation.requireNonNull(
                 newCourse,
                 "O curso é obrigatório!"
         );
@@ -105,7 +107,7 @@ public class Student extends User {
             Integer currentPeriod
     ) {
         if (currentPeriod == null || currentPeriod < 1) {
-            throw new IllegalArgumentException(
+            throw new InvalidBusinessDataException(
                     "O período atual deve ser maior que zero!"
             );
         }
@@ -113,7 +115,7 @@ public class Student extends User {
 
     private static void validateIra(Double ira) {
         if (ira == null || ira < 0.0 || ira > 10.0) {
-            throw new IllegalArgumentException(
+            throw new InvalidBusinessDataException(
                     "O IRA deve estar entre 0 e 10!"
             );
         }
@@ -151,37 +153,37 @@ public class Student extends User {
                 Double ira
         ) {
             if (username == null || username.isBlank()) {
-                throw new IllegalArgumentException(
+                throw new InvalidBusinessDataException(
                         "O nome de usuário é obrigatório!"
                 );
             }
 
             if (name == null || name.isBlank()) {
-                throw new IllegalArgumentException(
+                throw new InvalidBusinessDataException(
                         "O nome é obrigatório!"
                 );
             }
 
             this.username = username;
 
-            this.registration = Objects.requireNonNull(
+            this.registration = BusinessValidation.requireNonNull(
                     registration,
                     "O registro é obrigatório!"
             );
 
             this.name = name;
 
-            this.email = Objects.requireNonNull(
+            this.email = BusinessValidation.requireNonNull(
                     email,
                     "O email é obrigatório!"
             );
 
-            this.password = Objects.requireNonNull(
+            this.password = BusinessValidation.requireNonNull(
                     password,
                     "A senha é obrigatória!"
             );
 
-            this.course = Objects.requireNonNull(
+            this.course = BusinessValidation.requireNonNull(
                     course,
                     "O curso é obrigatório!"
             );
