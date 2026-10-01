@@ -41,7 +41,7 @@ public class ProjectProposalController {
         return ResponseEntity.ok(service.list());
     }
 
-    @GetMapping("/students/{studentId}/project-proposals")
+    @GetMapping("/students/project-proposals")
     @PreAuthorize ("hasRole('STUDENT')")
     public ResponseEntity<List<ProjectProposalResponse>> listByStudent(
             @AuthenticationPrincipal AuthenticatedUser principal
@@ -56,7 +56,7 @@ public class ProjectProposalController {
         return ResponseEntity.ok(service.findById(projectProposalId));
     }
 
-    @PostMapping("/students/{studentId}/project-proposals")
+    @PostMapping("/students/project-proposals")
     @PreAuthorize ("hasRole('STUDENT')")
     public ResponseEntity<ProjectProposalResponse> createForStudent(
             @AuthenticationPrincipal AuthenticatedUser principal,
